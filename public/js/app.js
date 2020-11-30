@@ -1916,20 +1916,53 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      archivo: [],
       dato: "Escribiendo algo sin sentido para probar que la vida no tiene sentido cuando esta patas para arriba como una tortuga dada vuelta luego de pelear contra zeus"
     };
   },
-  created: function created() {},
+  created: function created() {
+    /*
+        cargar archivo txt;        P;N;x,y;
+        P: punto venta
+        C: CARGA
+        N: cantidad de productos que tiene el camion;
+        x,y: coordenadas
+          guardarlos en variables
+        enviamos por axios a los controllers
+        de los controllers lo guardamos a la BD.
+          eliges camiones y las rutas ( a donde van)
+        se calcula la ruta mas corta (minimizar km => (x,y)=> debemos calcular  todas las distancias punto a punto posibles)
+        */
+  },
   methods: {
-    texto: function texto() {
-      var foo = new Blob([this.dato], {
-        type: "text/plain;charset=utf-8"
+    texto: function texto(archivo) {
+      fs.readFile(archivo, 'utf-8', function (err, data) {
+        if (err) {
+          console.log('error: ', err);
+        } else {
+          console.log(data);
+        }
       });
-      FileSaver.saveAs(foo, "hello world.txt");
-    }
+    },
+    readFile: function readFile(e) {
+      var f = e.dataTransfer.files;
+      this.texto(f);
+    },
+    previewFiles: function previewFiles(event) {
+      console.log(event.target.files);
+      this.archivo.push(event.target.files[0]);
+      console.log(this.archivo[0].name);
+      this.texto(this.archivo[0].name);
+    } // readFile:function(e)
+    // {
+    // }
+
   }
 });
 
@@ -2265,6 +2298,264 @@ function toComment(sourceMap) {
 
 //# sourceMappingURL=FileSaver.min.js.map
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/fs-web/dist/cjs/core.js":
+/*!**********************************************!*\
+  !*** ./node_modules/fs-web/dist/cjs/core.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*fs-web@1.0.0#core*/
+
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.readFile = readFile;
+exports.readString = readString;
+exports.writeFile = writeFile;
+exports.removeFile = removeFile;
+exports.readdir = readdir;
+exports.mkdir = mkdir;
+exports.rmdir = rmdir;
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { 'default': obj };
+}
+var _path = __webpack_require__(/*! path */ "./node_modules/path-browserify/index.js");
+var _path2 = _interopRequireDefault(_path);
+var _directory_entry = __webpack_require__(/*! ./directory_entry.js */ "./node_modules/fs-web/dist/cjs/directory_entry.js");
+var _directory_entry2 = _interopRequireDefault(_directory_entry);
+function ab2str(buf) {
+    return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+function str2ab(str) {
+    var buf = new ArrayBuffer(str.length * 2);
+    var bufView = new Uint16Array(buf);
+    for (var i = 0, strLen = str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
+}
+var DB_NAME = window.location.host + '_filesystem', OS_NAME = 'files', DIR_IDX = 'dir';
+function init(callback) {
+    var req = window.indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = function (e) {
+        var db = e.target.result;
+        var objectStore = db.createObjectStore(OS_NAME, { keyPath: 'path' });
+        objectStore.createIndex(DIR_IDX, 'dir', { unique: false });
+    };
+    req.onsuccess = function (e) {
+        callback(e.target.result);
+    };
+}
+function initOS(type, callback) {
+    init(function (db) {
+        var trans = db.transaction([OS_NAME], type), os = trans.objectStore(OS_NAME);
+        callback(os);
+    });
+}
+var readFrom = function readFrom(fileName) {
+    return new Promise(function (resolve, reject) {
+        initOS('readonly', function (os) {
+            var req = os.get(fileName);
+            req.onerror = reject;
+            req.onsuccess = function (e) {
+                var res = e.target.result;
+                if (res && res.data) {
+                    resolve(res.data);
+                } else {
+                    reject('File not found');
+                }
+            };
+        });
+    });
+};
+function readFile(fileName) {
+    return readFrom(fileName).then(function (data) {
+        if (!(data instanceof ArrayBuffer)) {
+            data = str2ab(data.toString());
+        }
+        return data;
+    });
+}
+function readString(fileName) {
+    return readFrom(fileName).then(function (data) {
+        if (data instanceof ArrayBuffer) {
+            data = ab2str(data);
+        }
+        return data;
+    });
+}
+;
+function writeFile(fileName, data) {
+    return new Promise(function (resolve, reject) {
+        initOS('readwrite', function (os) {
+            var req = os.put({
+                'path': fileName,
+                'dir': _path2['default'].dirname(fileName),
+                'type': 'file',
+                'data': data
+            });
+            req.onerror = reject;
+            req.onsuccess = function (e) {
+                resolve();
+            };
+        });
+    });
+}
+;
+function removeFile(fileName) {
+    return new Promise(function (resolve) {
+        initOS('readwrite', function (os) {
+            var req = os['delete'](fileName);
+            req.onerror = req.onsuccess = function (e) {
+                resolve();
+            };
+        });
+    });
+}
+;
+function withTrailingSlash(path) {
+    var directoryWithTrailingSlash = path[path.length - 1] === '/' ? path : path + '/';
+    return directoryWithTrailingSlash;
+}
+function readdir(directoryName) {
+    return new Promise(function (resolve, reject) {
+        initOS('readonly', function (os) {
+            var dir = _path2['default'].dirname(withTrailingSlash(directoryName));
+            var idx = os.index(DIR_IDX);
+            var range = IDBKeyRange.only(dir);
+            var req = idx.openCursor(range);
+            req.onerror = function (e) {
+                reject(e);
+            };
+            var results = [];
+            req.onsuccess = function (e) {
+                var cursor = e.target.result;
+                if (cursor) {
+                    var value = cursor.value;
+                    var entry = new _directory_entry2['default'](value.path, value.type);
+                    results.push(entry);
+                    cursor['continue']();
+                } else {
+                    resolve(results);
+                }
+            };
+        });
+    });
+}
+;
+function mkdir(fullPath) {
+    return new Promise(function (resolve, reject) {
+        initOS('readwrite', function (os) {
+            var dir = withTrailingSlash(_path2['default']);
+            var req = os.put({
+                'path': fullPath,
+                'dir': _path2['default'].dirname(dir),
+                'type': 'directory'
+            });
+            req.onerror = reject;
+            req.onsuccess = function (e) {
+                resolve();
+            };
+        });
+    });
+}
+;
+function rmdir(fullPath) {
+    return readdir(fullPath).then(function removeFiles(files) {
+        if (!files || !files.length) {
+            return removeFile(fullPath);
+        }
+        var file = files.shift(), func = file.type === 'directory' ? rmdir : removeFile;
+        return func(file.name).then(function () {
+            return removeFiles(files);
+        });
+    });
+}
+;
+
+/***/ }),
+
+/***/ "./node_modules/fs-web/dist/cjs/directory_entry.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/fs-web/dist/cjs/directory_entry.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*fs-web@1.0.0#directory_entry*/
+
+Object.defineProperty(exports, '__esModule', { value: true });
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { 'default': obj };
+}
+var _path = __webpack_require__(/*! path */ "./node_modules/path-browserify/index.js");
+var _path2 = _interopRequireDefault(_path);
+function DirectoryEntry(fullPath, type) {
+    this.path = fullPath;
+    this.name = _path2['default'].basename(fullPath);
+    this.dir = _path2['default'].dirname(fullPath);
+    this.type = type;
+}
+exports['default'] = DirectoryEntry;
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ "./node_modules/fs-web/dist/cjs/fs.js":
+/*!********************************************!*\
+  !*** ./node_modules/fs-web/dist/cjs/fs.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*fs-web@1.0.0#fs*/
+
+Object.defineProperty(exports, '__esModule', { value: true });
+function _interopRequireWildcard(obj) {
+    if (obj && obj.__esModule) {
+        return obj;
+    } else {
+        var newObj = {};
+        if (obj != null) {
+            for (var key in obj) {
+                if (Object.prototype.hasOwnProperty.call(obj, key))
+                    newObj[key] = obj[key];
+            }
+        }
+        newObj['default'] = obj;
+        return newObj;
+    }
+}
+function _defaults(obj, defaults) {
+    var keys = Object.getOwnPropertyNames(defaults);
+    for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var value = Object.getOwnPropertyDescriptor(defaults, key);
+        if (value && value.configurable && obj[key] === undefined) {
+            Object.defineProperty(obj, key, value);
+        }
+    }
+    return obj;
+}
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { 'default': obj };
+}
+var _core = __webpack_require__(/*! ./core.js */ "./node_modules/fs-web/dist/cjs/core.js");
+var _directory_entry = __webpack_require__(/*! ./directory_entry.js */ "./node_modules/fs-web/dist/cjs/directory_entry.js");
+var _directory_entry2 = _interopRequireDefault(_directory_entry);
+_directory_entry2['default'].prototype.readFile = function (callback) {
+    if (this.type !== 'file') {
+        throw new TypeError('Not a file.');
+    }
+    return (0, _core.readFile)(this.path, callback);
+};
+_defaults(exports, _interopRequireWildcard(_core));
+exports.DirectoryEntry = _directory_entry2['default'];
 
 /***/ }),
 
@@ -31865,6 +32156,320 @@ window.particlesJS.load = function(tag_id, path_config_json, callback){
   xhr.send();
 
 };
+
+/***/ }),
+
+/***/ "./node_modules/path-browserify/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/path-browserify/index.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
+// backported and transplited with Babel, with backwards-compat fixes
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  if (path.length === 0) return '.';
+  var code = path.charCodeAt(0);
+  var hasRoot = code === 47 /*/*/;
+  var end = -1;
+  var matchedSlash = true;
+  for (var i = path.length - 1; i >= 1; --i) {
+    code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        if (!matchedSlash) {
+          end = i;
+          break;
+        }
+      } else {
+      // We saw the first non-path separator
+      matchedSlash = false;
+    }
+  }
+
+  if (end === -1) return hasRoot ? '/' : '.';
+  if (hasRoot && end === 1) {
+    // return '//';
+    // Backwards-compat fix:
+    return '/';
+  }
+  return path.slice(0, end);
+};
+
+function basename(path) {
+  if (typeof path !== 'string') path = path + '';
+
+  var start = 0;
+  var end = -1;
+  var matchedSlash = true;
+  var i;
+
+  for (i = path.length - 1; i >= 0; --i) {
+    if (path.charCodeAt(i) === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          start = i + 1;
+          break;
+        }
+      } else if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // path component
+      matchedSlash = false;
+      end = i + 1;
+    }
+  }
+
+  if (end === -1) return '';
+  return path.slice(start, end);
+}
+
+// Uses a mixed approach for backwards-compatibility, as ext behavior changed
+// in new Node.js versions, so only basename() above is backported here
+exports.basename = function (path, ext) {
+  var f = basename(path);
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+exports.extname = function (path) {
+  if (typeof path !== 'string') path = path + '';
+  var startDot = -1;
+  var startPart = 0;
+  var end = -1;
+  var matchedSlash = true;
+  // Track the state of characters (if any) we see before our first dot and
+  // after any path separator we find
+  var preDotState = 0;
+  for (var i = path.length - 1; i >= 0; --i) {
+    var code = path.charCodeAt(i);
+    if (code === 47 /*/*/) {
+        // If we reached a path separator that was not part of a set of path
+        // separators at the end of the string, stop now
+        if (!matchedSlash) {
+          startPart = i + 1;
+          break;
+        }
+        continue;
+      }
+    if (end === -1) {
+      // We saw the first non-path separator, mark this as the end of our
+      // extension
+      matchedSlash = false;
+      end = i + 1;
+    }
+    if (code === 46 /*.*/) {
+        // If this is our first dot, mark it as the start of our extension
+        if (startDot === -1)
+          startDot = i;
+        else if (preDotState !== 1)
+          preDotState = 1;
+    } else if (startDot !== -1) {
+      // We saw a non-dot and non-path separator before our dot, so we should
+      // have a good chance at having a non-empty extension
+      preDotState = -1;
+    }
+  }
+
+  if (startDot === -1 || end === -1 ||
+      // We saw a non-dot character immediately before the dot
+      preDotState === 0 ||
+      // The (right-most) trimmed path component is exactly '..'
+      preDotState === 1 && startDot === end - 1 && startDot === startPart + 1) {
+    return '';
+  }
+  return path.slice(startDot, end);
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -92852,6 +93457,28 @@ var render = function() {
       "button",
       { staticClass: "btn btn-lg btn-success", on: { click: _vm.texto } },
       [_vm._v(" Test")]
+    ),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        attrs: { enctype: "multipart/form-data" },
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.readFile($event)
+          }
+        }
+      },
+      [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { type: "file", name: "archivo" },
+          on: { change: _vm.previewFiles }
+        }),
+        _vm._v(" Ingrese el archivo\n        "),
+        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Enviar")])
+      ]
     )
   ])
 }
@@ -105320,6 +105947,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 __webpack_require__(/*! sweetalert */ "./node_modules/sweetalert/dist/sweetalert.min.js");
 
 window.FileSaver = __webpack_require__(/*! file-saver */ "./node_modules/file-saver/dist/FileSaver.min.js");
+window.fs = __webpack_require__(/*! fs-web */ "./node_modules/fs-web/dist/cjs/fs.js");
 Vue.component('particles', __webpack_require__(/*! ./components/particulas.vue */ "./resources/js/components/particulas.vue")["default"]);
 Vue.component('integrantes', __webpack_require__(/*! ./components/IntegrantesComponent.vue */ "./resources/js/components/IntegrantesComponent.vue")["default"]);
 Vue.component('home', __webpack_require__(/*! ./components/HomeComponent.vue */ "./resources/js/components/HomeComponent.vue")["default"]);
