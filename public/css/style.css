@@ -1,0 +1,158 @@
+@import '~bootstrap/dist/css/bootstrap.min.css';
+#navbar {
+    background-color: rgba(9, 14, 17, 0.85) !important;
+    -webkit-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    top: 0%;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+}
+
+html,
+body {
+    overflow-y: hidden;
+}
+
+@font-face {
+    font-family: "FredokaOne";
+    src: url("../fonts/FredokaOne-Regular.ttf");
+}
+
+@font-face {
+    font-family: "LatoLight";
+    src: url("../fonts/Lato-Light.ttf");
+}
+
+@font-face {
+    font-family: "LatoRegular";
+    src: url("../fonts/Lato-Regular.ttf");
+}
+
+.lato {
+    font-family: "LatoRegular";
+}
+
+.fredoka {
+    font-family: "FredokaOne";
+}
+
+.grafo1 {
+    -webkit-box-shadow: 9px 11px 28px -6px rgba(74, 74, 74, 1);
+    -moz-box-shadow: 9px 11px 28px -6px rgba(74, 74, 74, 1);
+    box-shadow: 9px 11px 28px -6px rgba(74, 74, 74, 1);
+    border: 1px solid lightgray;
+}
+
+.opciones {
+    background-color: #302F40 !important;
+    color: white;
+}
+
+.detalleopciones {
+    border-bottom: 1px solid lightgray;
+}
+
+#particles-js {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    overflow-x: hidden;
+    z-index: 1;
+}
+
+.cardaux {
+    background-color: rgba(108, 117, 125, 0.7) !important;
+    border-color: #090e11;
+    color: #e7e7e7;
+    -webkit-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+}
+
+.cardaux2 {
+    background-color: rgba(15, 19, 22, 0.85) !important;
+    border-color: #090e11;
+    color: #e7e7e7;
+    -webkit-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+}
+
+.cardaux3 {
+    background-color: rgba(108, 117, 125, 0.7) !important;
+    border-color: #090e11;
+    color: #e7e7e7;
+    -webkit-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    border-radius: 0%;
+}
+
+.cardaux4 {
+    background-color: #6c757d!important;
+    border-color: #090e11;
+    color: #e7e7e7;
+    -webkit-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    -moz-box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    box-shadow: 0px 0px 40px -5px rgba(0, 0, 0, 1);
+    border-radius: 0%;
+}
+
+.textocolor {
+    color: #e7e7e7 !important;
+    z-index: 100;
+}
+
+.prioridad {
+    z-index: 100;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover {
+    color: white;
+    background-color: rgba(35, 44, 49, 0.85) !important;
+    border-radius: 10%;
+    transition: 0.3s;
+}
+
+.info {
+    background-color: rgba(108, 117, 125, 0.0);
+    border-color: #090e11;
+    color: #e7e7e7;
+}
+
+.image-parentmg {
+    background-color: rgba(108, 117, 125, 0.0);
+    max-width: 200px;
+}
+
+.image-parent {
+    background-color: rgba(108, 117, 125, 0.0);
+}
+
+.list-group-item:hover {
+    background-color: rgb(160, 166, 170);
+}
+
+.img-fluid {
+    max-width: 250px;
+    max-height: 250px;
+}
+
+.alertas {
+    background-color: rgba(108, 117, 125, 0.75);
+}
+
+.swal-text {
+    color: white;
+}
+
+.swal-title {
+    color: white
+}

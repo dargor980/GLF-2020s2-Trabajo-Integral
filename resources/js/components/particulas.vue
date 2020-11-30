@@ -5,7 +5,7 @@
                 <div class="row container-fluid">
                     <!--NOMBRE-->
                     <div class="col-md-4">
-                        <div class="navbar-brand fredoka textocolor">Trabajo Unidad II: Autómatas de Pila y Expresiones Regulares</div>
+                        <div class="navbar-brand fredoka textocolor">Trabajo Integral: Hoja de Rutas</div>
                     </div>
                     <!--/NOMBRE-->
             
@@ -17,7 +17,7 @@
                                     <a class="nav-link lato textocolor" href="#" @click="mostrarHome">Home</a>
                                 </li>
                                 <li class="nav-item active">
-                                    <a class="nav-link lato textocolor" href="#" @click="mostrarGrafo" >Autómatas</a>
+                                    <a class="nav-link lato textocolor" href="#" @click="mostrarGrafo" >Hoja de Rutas</a>
                                 </li>
                                 <li class="nav-item active">
                                     <a class="nav-link lato textocolor" href="#" @click="mostrarIntegrantes">Integrantes</a>
@@ -36,7 +36,7 @@
         </nav>
         
         <home v-if="controlvista===1"></home>
-        <automata v-if="controlvista===2"></automata>
+        <integral v-if="controlvista===2"></integral>
         <integrantes v-if="controlvista===3"></integrantes>
     </div>
 </template>
@@ -81,9 +81,9 @@ export default {
                     'nb_sides': 5
                     },
                     'image': {
-                    'src': 'img/github.svg',
-                    'width': 100,
-                    'height': 100
+                    'src': 'img/algogenerico.png',
+                    'width': 1000,
+                    'height': 1000
                     }
                 },
                 'opacity': {
