@@ -6,6 +6,7 @@ window.Vue = require('vue');
 require('sweetalert');
 window.FileSaver = require('file-saver');
 window.fs = require('fs-web');
+window.$ = window.jQuery= require('jquery');
 
 Vue.component('particles', require('./components/particulas.vue').default);
 Vue.component('integrantes', require('./components/IntegrantesComponent.vue').default);
