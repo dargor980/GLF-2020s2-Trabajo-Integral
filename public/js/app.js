@@ -2019,23 +2019,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       valor: '',
-      valor2: ''
+      valor2: '',
+      puntosVenta: [],
+      centrosDistribucion: []
     };
   },
-  created: function created() {},
+  created: function created() {
+    var _this = this;
+
+    axios.get('/puntosventa').then(function (response) {
+      _this.puntosVenta = response.data;
+    });
+    axios.get('/centrosdistribucion').then(function (response) {
+      _this.centrosDistribucion = response.data;
+    });
+  },
   methods: {}
 });
 
@@ -93641,12 +93643,15 @@ var render = function() {
                     _vm._v("Selecciona...")
                   ]),
                   _vm._v(" "),
-                  _c("option", { attrs: { value: "1" } }, [_vm._v("One")]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "2" } }, [_vm._v("Two")]),
-                  _vm._v(" "),
-                  _c("option", { attrs: { value: "3" } }, [_vm._v("Three")])
-                ]
+                  _vm._l(_vm.centrosDistribucion, function(item, index) {
+                    return _c(
+                      "option",
+                      { key: index, domProps: { value: item.id } },
+                      [_vm._v(_vm._s(item.N))]
+                    )
+                  })
+                ],
+                2
               )
             ]),
             _vm._v(" "),
@@ -93688,12 +93693,15 @@ var render = function() {
                         _vm._v("Selecciona...")
                       ]),
                       _vm._v(" "),
-                      _c("option", { attrs: { value: "1" } }, [_vm._v("One")]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "2" } }, [_vm._v("Two")]),
-                      _vm._v(" "),
-                      _c("option", { attrs: { value: "3" } }, [_vm._v("Three")])
-                    ]
+                      _vm._l(_vm.puntosVenta, function(item, index) {
+                        return _c(
+                          "option",
+                          { key: index, domProps: { value: item.id } },
+                          [_vm._v(_vm._s(item.N))]
+                        )
+                      })
+                    ],
+                    2
                   )
                 ])
               : _vm._e(),
@@ -93730,7 +93738,31 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _vm._m(8)
+      _c("div", { staticClass: "col-4" }, [
+        _c("h1", { staticClass: "fredoka textocolor" }, [
+          _vm._v("Centros de Distribución")
+        ]),
+        _vm._v(" "),
+        _c("table", { staticClass: "table table-dark" }, [
+          _vm._m(8),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.centrosDistribucion, function(item, index) {
+              return _c("tr", { key: index }, [
+                _c("th", { attrs: { scope: "row" } }, [_vm._v(_vm._s(item.N))]),
+                _vm._v(" "),
+                _c("td", [
+                  _vm._v("X:" + _vm._s(item.x) + "; Y:" + _vm._s(item.y))
+                ])
+              ])
+            }),
+            0
+          )
+        ]),
+        _vm._v(" "),
+        _vm._m(9)
+      ])
     ])
   ])
 }
@@ -93852,66 +93884,44 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-4" }, [
-      _c("table", { staticClass: "table table-dark" }, [
-        _c("thead", [
-          _c("tr", [
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [
-              _vm._v("Centros de distribucion")
-            ])
-          ])
-        ]),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("N")]),
         _vm._v(" "),
-        _c("tbody", [
-          _c("tr", [
-            _c("th", { attrs: { scope: "row" } }, [_vm._v("1")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Mark")])
-          ]),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Coordenadas")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("table", { staticClass: "table table-dark" }, [
+      _c("thead", [
+        _c("tr", [
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
           _vm._v(" "),
-          _c("tr", [
-            _c("th", { attrs: { scope: "row" } }, [_vm._v("2")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Jacob")])
-          ]),
-          _vm._v(" "),
-          _c("tr", [
-            _c("th", { attrs: { scope: "row" } }, [_vm._v("3")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Larry")])
-          ])
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Coordenadas")])
         ])
       ]),
       _vm._v(" "),
-      _c("table", { staticClass: "table table-dark" }, [
-        _c("thead", [
-          _c("tr", [
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-            _vm._v(" "),
-            _c("th", { attrs: { scope: "col" } }, [_vm._v("Puntos de venta")])
-          ])
+      _c("tbody", [
+        _c("tr", [
+          _c("th", { attrs: { scope: "row" } }, [_vm._v("1")]),
+          _vm._v(" "),
+          _c("td", [_vm._v("Mark")])
         ]),
         _vm._v(" "),
-        _c("tbody", [
-          _c("tr", [
-            _c("th", { attrs: { scope: "row" } }, [_vm._v("1")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Mark")])
-          ]),
+        _c("tr", [
+          _c("th", { attrs: { scope: "row" } }, [_vm._v("2")]),
           _vm._v(" "),
-          _c("tr", [
-            _c("th", { attrs: { scope: "row" } }, [_vm._v("2")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Jacob")])
-          ]),
+          _c("td", [_vm._v("Jacob")])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", { attrs: { scope: "row" } }, [_vm._v("3")]),
           _vm._v(" "),
-          _c("tr", [
-            _c("th", { attrs: { scope: "row" } }, [_vm._v("3")]),
-            _vm._v(" "),
-            _c("td", [_vm._v("Larry")])
-          ])
+          _c("td", [_vm._v("Larry")])
         ])
       ])
     ])

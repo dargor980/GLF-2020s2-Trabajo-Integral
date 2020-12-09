@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\leerArchivo;
+use App\Http\Controllers\getDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,7 @@ Route::get('/', function () {
 });
 
 Route::post('/sendtxt', [leerArchivo::class, 'readText']);
+
+Route::get('/puntosventa',[getDataController::class, 'getPuntosVenta']);
+
+Route::get('/centrosdistribucion', [getDataController::class, 'getCentrosDistribucion']);

@@ -32,9 +32,9 @@ class leerArchivo extends Controller
                 if($aux[0]=="P" || $aux[0]=="p" || $aux[0]=="C" || $aux[0]=="c"){ 
                     if(is_numeric($aux[1])){                      
                         $aux2= preg_split("/,/",$aux[2]);
-                        if(count($aux2)==2){
-                            if(is_numeric($aux2[0])){
-                                if(is_string($aux2[1]) && intval($aux2[1])){      
+                        if(count($aux2)==2){  
+                            if(is_numeric($aux2[0])){ 
+                                if(is_string($aux2[1]) && intval($aux2[1],10)){      
                                 }
                                 else{
                                     return 'INVALID_FORMAT';
