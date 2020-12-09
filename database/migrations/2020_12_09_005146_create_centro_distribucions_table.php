@@ -15,6 +15,7 @@ class CreateCentroDistribucionsTable extends Migration
     {
         Schema::create('centro_distribucions', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('N');
             $table->bigInteger('x');
             $table->bigInteger('y');
             $table->timestamps();

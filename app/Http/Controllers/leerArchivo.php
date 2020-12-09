@@ -59,7 +59,33 @@ class leerArchivo extends Controller
         }
 
         //Store the data in the DB
-        
+        foreach($content as $data){
+            $row= explode(";",$data);
+            if($row[0]=="P" || $row[0]=="p"){
+                try{
+                    $savedata= new punto_Venta();
+                    $savedata->N= intval($row[1]);
+                    $coordenadas= preg_split("/,/",$row[2]);
+                    $savedata->x= intval($coordenadas[0]);
+                    $savedata->y = intval($coordenadas[1]);
+                    $savedata->save();
+                }catch(\Illuminate\Database\QueryException $ex){
+                    return 'Error: '. $ex->message();
+                }
+            }
+            else{
+                try{
+                    $savedata= new centro_distribucion();
+                    $savedata->N= intval($row[1]);
+                    $coordenadas= preg_split("/,/",$row[2]);
+                    $savedata->x= intval($coordenadas[0]);
+                    $savedata->y= intval($coordenadas[1]);
+                    $savedata->save();
+                }catch(\Illuminate\Database\QueryException $ex){
+                    return 'Error: '. $ex->message();
+                }
+            }
+        }
 
         return 'OK';
     }

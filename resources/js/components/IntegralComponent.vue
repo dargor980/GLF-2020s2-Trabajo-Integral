@@ -51,7 +51,7 @@ export default {
                         className:"alertas",
                         title:"Error",
                         icon:"error"
-                    })
+                    });
                 }
                 console.log(resp.data);
             });
