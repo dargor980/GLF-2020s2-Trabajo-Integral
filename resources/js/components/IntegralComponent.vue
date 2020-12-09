@@ -2,9 +2,9 @@
     <div class="container mt-5 pt-4">
         
         <form @submit.prevent="sendTXT" enctype="multipart/form-data">
-            <input type="file" class="form-control"  name="archivo" id="file" @change="onFileChange"> Ingrese el archivo
-            <textarea name="texto" disabled id="contenido" cols="30" rows="10"></textarea>
-            <button class="btn btn-success" >Enviar</button>
+            <input type="file" class="form-control"  name="archivo" id="file" @change="onFileChange">
+            
+            <button class="btn btn-success my-3" >Enviar</button>
         </form>
     </div>
 </template>
@@ -46,6 +46,13 @@ export default {
 
             axios.post("/sendtxt",fd).then(resp =>{
                 console.log("entró");
+                if(resp.data=='INVALID_FORMAT'){
+                    swal("Formato Inválido",{
+                        className:"alertas",
+                        title:"Error",
+                        icon:"error"
+                    })
+                }
                 console.log(resp.data);
             });
 

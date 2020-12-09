@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\centro_distribucion;
+use App\punto_Venta;
 
 class leerArchivo extends Controller
 {
@@ -18,77 +19,48 @@ class leerArchivo extends Controller
         $archivo = fopen($path,'r');
         while($linea = fgets($archivo)){
             array_push($content,$linea);
-            
         }
 
+        //Text format validation.
         foreach($content as $item){
-            // aca tendriamos que ir separando las weas de la linea
-            //P;1;10,6  SPLIT ";"  ==> transformar a array  
             $aux= explode(";", $item);
-            if(count($aux)!=3)
-            {
-                
-                return "Formato no aceptado 1";
+            if(count($aux)!=3){
+      
+                return 'INVALID_FORMAT';
             }
             else{
-                if($aux[0]=="P" || $aux[0]=="p")
-                { 
+                if($aux[0]=="P" || $aux[0]=="p" || $aux[0]=="C" || $aux[0]=="c"){ 
                     if(is_numeric($aux[1])){                      
-                        $aux2= explode(",",$aux[2]);
-                        if(count($aux2)==2)
-                        {
+                        $aux2= preg_split("/,/",$aux[2]);
+                        if(count($aux2)==2){
                             if(is_numeric($aux2[0])){
-                                if(is_numeric($aux2[1])){
-                                    //error pendiente 
+                                if(is_string($aux2[1]) && intval($aux2[1])){      
                                 }
                                 else{
-                                    return 'Formato no aceptado. 1 '.$aux2[1].'no es un numero' ;
+                                    return 'INVALID_FORMAT';
                                 }
                             }
                             else{
-                                return 'Formato no aceptado. 2'.$aux2[0].'no es un número';
+                                return 'INVALID_FORMAT';
                             }
-                            
                         }
                         else{
-                            return 'Formato no aceptado.3';
+                            return 'INVALID_FORMAT';
                         }
                     }
                     else{
-                        return 'Formato no aceptado.4';
+                        return 'INVALID_FORMAT';
                     }
                 }
                 else{
-                    if($aux[0]=="C" || $aux[0]=="c"){        
-                        if(is_numeric($aux[1])){                      
-                            $aux3= explode(",",$aux[2]);
-                            if(count($aux3)==2)
-                            {
-                                if(is_numeric($aux3[0])){
-                                    if(is_numeric($aux3[1])){
-                                        
-                                    }
-                                    else{
-                                        return 'Formato no aceptado.  5';
-                                    }
-                                }
-                                else{
-                                    return 'Formato no aceptado.  6';
-                                }
-                                
-                            }
-                            else{
-                                return 'Formato no aceptado.7';
-                            }
-                        }
-                        else{
-                            return 'Formato no aceptado.8';
-                        }
-                    }
+                    return 'INVALID_FORMAT';
                 }
             }
         }
 
-        return 'ta bien mi rey';
+        //Store the data in the DB
+        
+
+        return 'OK';
     }
 }

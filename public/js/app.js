@@ -2094,6 +2094,15 @@ __webpack_require__.r(__webpack_exports__);
       fd.append('texto', this.attachment.file);
       axios.post("/sendtxt", fd).then(function (resp) {
         console.log("entró");
+
+        if (resp.data == 'INVALID_FORMAT') {
+          swal("Formato Inválido", {
+            className: "alertas",
+            title: "Error",
+            icon: "error"
+          });
+        }
+
         console.log(resp.data);
       });
     }
@@ -93947,18 +93956,10 @@ var render = function() {
           attrs: { type: "file", name: "archivo", id: "file" },
           on: { change: _vm.onFileChange }
         }),
-        _vm._v(" Ingrese el archivo\n        "),
-        _c("textarea", {
-          attrs: {
-            name: "texto",
-            disabled: "",
-            id: "contenido",
-            cols: "30",
-            rows: "10"
-          }
-        }),
         _vm._v(" "),
-        _c("button", { staticClass: "btn btn-success" }, [_vm._v("Enviar")])
+        _c("button", { staticClass: "btn btn-success my-3" }, [
+          _vm._v("Enviar")
+        ])
       ]
     )
   ])
