@@ -63,9 +63,9 @@
                 </form>     
             </div> 
             <div class="col-4">
-                <h1 class="fredoka textocolor">Centros de Distribución</h1>
-                <table class="table table-dark">
-                    <thead>
+                <h4 class="fredoka textocolor">Centros de Distribución</h4>
+                <table class="table table-bordered cardaux textocolor">
+                    <thead class="thead-dark">
                         <tr>
                         <th scope="col">N</th>
                         <th scope="col">Coordenadas</th>
@@ -75,31 +75,26 @@
                         
                         <tr v-for="(item, index) in centrosDistribucion" :key="index">
                             <th scope="row">{{item.N}}</th>
-                            <td>X:{{item.x}}; Y:{{item.y}}</td>
+                            <td>X: {{item.x}}; Y: {{item.y}}</td>
                         </tr>
                         
                     </tbody>
                 </table>
-                <table class="table table-dark">
-                    <thead>
+                <h4 class="fredoka textocolor">Puntos de Venta</h4>
+                <table class="table table-bordered cardaux textocolor">
+                    <thead class="thead-dark">
                         <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">N</th>
                         <th scope="col">Coordenadas</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
+                        
+                        <tr v-for="(item, index) in puntosVenta" :key="index">
+                            <th scope="row">{{item.N}}</th>
+                            <td>X: {{item.x}}; Y: {{item.y}}</td>
                         </tr>
-                        <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        </tr>
-                        <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        </tr>
+                        
                     </tbody>
                 </table>
                 

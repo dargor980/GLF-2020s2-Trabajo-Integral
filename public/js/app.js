@@ -2014,11 +2014,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -93739,29 +93734,61 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "col-4" }, [
-        _c("h1", { staticClass: "fredoka textocolor" }, [
+        _c("h4", { staticClass: "fredoka textocolor" }, [
           _vm._v("Centros de Distribución")
         ]),
         _vm._v(" "),
-        _c("table", { staticClass: "table table-dark" }, [
-          _vm._m(8),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.centrosDistribucion, function(item, index) {
-              return _c("tr", { key: index }, [
-                _c("th", { attrs: { scope: "row" } }, [_vm._v(_vm._s(item.N))]),
-                _vm._v(" "),
-                _c("td", [
-                  _vm._v("X:" + _vm._s(item.x) + "; Y:" + _vm._s(item.y))
+        _c(
+          "table",
+          { staticClass: "table table-bordered cardaux textocolor" },
+          [
+            _vm._m(8),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.centrosDistribucion, function(item, index) {
+                return _c("tr", { key: index }, [
+                  _c("th", { attrs: { scope: "row" } }, [
+                    _vm._v(_vm._s(item.N))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v("X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y))
+                  ])
                 ])
-              ])
-            }),
-            0
-          )
+              }),
+              0
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("h4", { staticClass: "fredoka textocolor" }, [
+          _vm._v("Puntos de Venta")
         ]),
         _vm._v(" "),
-        _vm._m(9)
+        _c(
+          "table",
+          { staticClass: "table table-bordered cardaux textocolor" },
+          [
+            _vm._m(9),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.puntosVenta, function(item, index) {
+                return _c("tr", { key: index }, [
+                  _c("th", { attrs: { scope: "row" } }, [
+                    _vm._v(_vm._s(item.N))
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v("X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y))
+                  ])
+                ])
+              }),
+              0
+            )
+          ]
+        )
       ])
     ])
   ])
@@ -93884,7 +93911,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
+    return _c("thead", { staticClass: "thead-dark" }, [
       _c("tr", [
         _c("th", { attrs: { scope: "col" } }, [_vm._v("N")]),
         _vm._v(" "),
@@ -93896,33 +93923,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("table", { staticClass: "table table-dark" }, [
-      _c("thead", [
-        _c("tr", [
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-          _vm._v(" "),
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("Coordenadas")])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("tbody", [
-        _c("tr", [
-          _c("th", { attrs: { scope: "row" } }, [_vm._v("1")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("Mark")])
-        ]),
+    return _c("thead", { staticClass: "thead-dark" }, [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("N")]),
         _vm._v(" "),
-        _c("tr", [
-          _c("th", { attrs: { scope: "row" } }, [_vm._v("2")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("Jacob")])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", { attrs: { scope: "row" } }, [_vm._v("3")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("Larry")])
-        ])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Coordenadas")])
       ])
     ])
   }
@@ -106779,8 +106784,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\GLF-2020s2-Trabajo-Integral\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\GLF-2020s2-Trabajo-Integral\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Users\crist\Desktop\Cursos\Grafos\GLF-2020s2-Trabajo-Integral\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Users\crist\Desktop\Cursos\Grafos\GLF-2020s2-Trabajo-Integral\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
