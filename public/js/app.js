@@ -2047,6 +2047,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Bus__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Bus */ "./resources/js/Bus.js");
 //
 //
 //
@@ -2058,6 +2059,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2098,8 +2100,10 @@ __webpack_require__.r(__webpack_exports__);
             title: "Error",
             icon: "error"
           });
+          return;
         }
 
+        _Bus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('controlvista', 1);
         console.log(resp.data);
       });
     }
@@ -2117,6 +2121,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Bus__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Bus */ "./resources/js/Bus.js");
 //
 //
 //
@@ -2160,17 +2165,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       controlvista: 2
     };
   },
-  mounted: function mounted() {
+  created: function created() {
     var _this = this;
 
+    _Bus__WEBPACK_IMPORTED_MODULE_0__["default"].$on('controlvista', function (data) {
+      _this.controlvista = data;
+    });
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
     this.$nextTick(function () {
-      _this.initParticlesJS();
+      _this2.initParticlesJS();
     });
   },
   methods: {
@@ -106421,6 +106434,21 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/Bus.js":
+/*!*****************************!*\
+  !*** ./resources/js/Bus.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+var bus = new Vue();
+/* harmony default export */ __webpack_exports__["default"] = (bus);
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -106784,8 +106812,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Users\crist\Desktop\Cursos\Grafos\GLF-2020s2-Trabajo-Integral\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\Users\crist\Desktop\Cursos\Grafos\GLF-2020s2-Trabajo-Integral\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\GLF-2020s2-Trabajo-Integral\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\GLF-2020s2-Trabajo-Integral\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

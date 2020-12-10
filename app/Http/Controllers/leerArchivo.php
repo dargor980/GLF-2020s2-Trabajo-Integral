@@ -70,7 +70,7 @@ class leerArchivo extends Controller
                     $savedata->y = intval($coordenadas[1]);
                     $savedata->save();
                 }catch(\Illuminate\Database\QueryException $ex){
-                    return 'Error: '. $ex->message();
+                    return 'Error: ' . $ex->getMessage();
                 }
             }
             else{
@@ -82,7 +82,7 @@ class leerArchivo extends Controller
                     $savedata->y= intval($coordenadas[1]);
                     $savedata->save();
                 }catch(\Illuminate\Database\QueryException $ex){
-                    return 'Error: '. $ex->message();
+                    return 'Error: '. $ex->getMessage();
                 }
             }
         }

@@ -42,13 +42,17 @@
 </template>
 
 <script>
+import eventBus from '../Bus';
 export default {
     data() {
         return {
             controlvista: 2,
-            
-
         }
+    },
+    created(){
+        eventBus.$on('controlvista', data =>{
+            this.controlvista=data;
+        });
     },
     
     mounted(){

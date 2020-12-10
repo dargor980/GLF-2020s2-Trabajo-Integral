@@ -4,12 +4,13 @@
         <form @submit.prevent="sendTXT" enctype="multipart/form-data">
             <input type="file" class="form-control"  name="archivo" id="file" @change="onFileChange">
             
-            <button class="btn btn-success my-3" >Enviar</button>
+            <button class="btn btn-success my-3">Enviar</button>
         </form>
     </div>
 </template>
 
 <script>
+import eventBus from '../Bus';
 export default {
     data(){
         return{
@@ -52,7 +53,9 @@ export default {
                         title:"Error",
                         icon:"error"
                     });
+                    return;
                 }
+                eventBus.$emit('controlvista',1);
                 console.log(resp.data);
             });
 
