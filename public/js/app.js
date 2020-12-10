@@ -2014,6 +2014,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2021,8 +2023,11 @@ __webpack_require__.r(__webpack_exports__);
       valor2: '',
       puntosVenta: [],
       centrosDistribucion: [],
+      dTotal: '',
+      camionesD: '',
       camiones: [],
-      nCamiones: ''
+      option1: true,
+      option2: false
     };
   },
   created: function created() {
@@ -2036,6 +2041,16 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
+    homeControl1: function homeControl1() {
+      this.option1 = false;
+      this.option2 = true;
+      console.log(this.dTotal, this.camionesD);
+      return;
+    },
+    homeControl2: function homeControl2() {
+      this.option2 = true;
+      return;
+    },
     createCamiones: function createCamiones() {
       var camion = {
         id: '',
@@ -93604,122 +93619,107 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container mt-5 pt-4" }, [
-    _c("h1", { staticClass: "fredoka textocolor my-2" }, [
-      _vm._v("Ingrese Ubicaciones Importantes")
-    ]),
-    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-4" }, [
-        _c(
-          "form",
-          {
-            staticClass: "cardaux textocolor p-3",
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-              }
-            }
-          },
-          [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "id" } }, [
-                _vm._v("Total camiones Día:")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.nCamiones,
-                    expression: "nCamiones"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "number", name: "id", min: "0" },
-                domProps: { value: _vm.nCamiones },
+      _c("div", { staticClass: "col-8" }, [
+        _vm.option1 == true
+          ? _c(
+              "form",
+              {
+                staticClass: "cardaux textocolor p-3",
                 on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.nCamiones = $event.target.value
+                  submit: function($event) {
+                    $event.preventDefault()
                   }
                 }
-              })
-            ]),
-            _vm._v(" "),
-            _vm._m(1)
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-4" }, [
-        _c(
-          "form",
-          {
-            staticClass: "cardaux textocolor p-3",
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-              }
-            }
-          },
-          [
-            _c("div", { staticClass: "input-group mb-3" }, [
-              _vm._m(2),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.valor,
-                      expression: "valor"
-                    }
-                  ],
-                  staticClass: "custom-select",
-                  attrs: { id: "inputGroupSelect01" },
-                  on: {
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.valor = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                [
-                  _c("option", { attrs: { selected: "", value: "0" } }, [
-                    _vm._v("Selecciona...")
+              },
+              [
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "id" } }, [
+                    _vm._v("Total por distribuir ")
                   ]),
                   _vm._v(" "),
-                  _vm._l(_vm.centrosDistribucion, function(item, index) {
-                    return _c(
-                      "option",
-                      { key: index, domProps: { value: item.id } },
-                      [_vm._v(_vm._s(item.N))]
-                    )
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.dTotal,
+                        expression: "dTotal"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "number", min: "0", name: "id" },
+                    domProps: { value: _vm.dTotal },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.dTotal = $event.target.value
+                      }
+                    }
                   })
-                ],
-                2
-              )
-            ]),
-            _vm._v(" "),
-            _vm.valor != 0
-              ? _c("div", { staticClass: "input-group mb-3" }, [
-                  _vm._m(3),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group" }, [
+                  _c("label", { attrs: { for: "id" } }, [
+                    _vm._v("Total camiones Día:")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.camionesD,
+                        expression: "camionesD"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "number", name: "id", min: "0" },
+                    domProps: { value: _vm.camionesD },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.camionesD = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "text-center" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success btn-sm",
+                      attrs: { id: "btn1", type: "submit" },
+                      on: { click: _vm.homeControl1 }
+                    },
+                    [_vm._v("Guardar")]
+                  )
+                ])
+              ]
+            )
+          : _vm._e()
+      ]),
+      _vm._v(" "),
+      _vm.option2 == true
+        ? _c("div", { staticClass: "col-6" }, [
+            _c(
+              "form",
+              {
+                staticClass: "cardaux textocolor p-3",
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "input-group mb-3" }, [
+                  _vm._m(0),
                   _vm._v(" "),
                   _c(
                     "select",
@@ -93728,12 +93728,12 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.valor2,
-                          expression: "valor2"
+                          value: _vm.valor,
+                          expression: "valor"
                         }
                       ],
                       staticClass: "custom-select",
-                      attrs: { id: "inputGroupSelect02" },
+                      attrs: { id: "inputGroupSelect01" },
                       on: {
                         change: function($event) {
                           var $$selectedVal = Array.prototype.filter
@@ -93744,18 +93744,18 @@ var render = function() {
                               var val = "_value" in o ? o._value : o.value
                               return val
                             })
-                          _vm.valor2 = $event.target.multiple
+                          _vm.valor = $event.target.multiple
                             ? $$selectedVal
                             : $$selectedVal[0]
                         }
                       }
                     },
                     [
-                      _c("option", { attrs: { selected: "" } }, [
+                      _c("option", { attrs: { selected: "", value: "0" } }, [
                         _vm._v("Selecciona...")
                       ]),
                       _vm._v(" "),
-                      _vm._l(_vm.puntosVenta, function(item, index) {
+                      _vm._l(_vm.centrosDistribucion, function(item, index) {
                         return _c(
                           "option",
                           { key: index, domProps: { value: item.id } },
@@ -93765,127 +93765,159 @@ var render = function() {
                     ],
                     2
                   )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.valor2 != 0 && _vm.valor != 0
-              ? _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { for: "id" } }, [
-                    _vm._v("Cantidad por distruibuir")
-                  ]),
-                  _vm._v(" "),
-                  _c("input", {
-                    staticClass: "form-control",
-                    attrs: {
-                      type: "number",
-                      min: "0",
-                      max: "1000",
-                      name: "id",
-                      placeholder: "1000 max."
-                    }
-                  })
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.valor2 != 0 && _vm.valor != 0
-              ? _c("div", { staticClass: "input-group mb-3" }, [
-                  _vm._m(4),
-                  _vm._v(" "),
-                  _vm._m(5)
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm._m(6)
-          ]
-        )
-      ]),
+                ]),
+                _vm._v(" "),
+                _vm.valor != 0
+                  ? _c("div", { staticClass: "input-group mb-3" }, [
+                      _vm._m(1),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.valor2,
+                              expression: "valor2"
+                            }
+                          ],
+                          staticClass: "custom-select",
+                          attrs: { id: "inputGroupSelect02" },
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.valor2 = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            }
+                          }
+                        },
+                        [
+                          _c("option", { attrs: { selected: "" } }, [
+                            _vm._v("Selecciona...")
+                          ]),
+                          _vm._v(" "),
+                          _vm._l(_vm.puntosVenta, function(item, index) {
+                            return _c(
+                              "option",
+                              { key: index, domProps: { value: item.id } },
+                              [_vm._v(_vm._s(item.N))]
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.valor2 != 0 && _vm.valor != 0
+                  ? _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "id" } }, [
+                        _vm._v("Cantidad por distruibuir")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "number",
+                          min: "0",
+                          max: "1000",
+                          name: "id",
+                          placeholder: "1000 max."
+                        }
+                      })
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.valor2 != 0 && _vm.valor != 0
+                  ? _c("div", { staticClass: "input-group mb-3" }, [
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _vm._m(3)
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._m(4)
+              ]
+            )
+          ])
+        : _vm._e(),
       _vm._v(" "),
-      _c("div", { staticClass: "col-4" }, [
-        _c("h4", { staticClass: "fredoka textocolor" }, [
-          _vm._v("Centros de Distribución")
-        ]),
-        _vm._v(" "),
-        _c(
-          "table",
-          { staticClass: "table table-bordered cardaux textocolor" },
-          [
-            _vm._m(7),
+      _vm.option2 == true
+        ? _c("div", { staticClass: "col-6" }, [
+            _c("h4", { staticClass: "fredoka textocolor" }, [
+              _vm._v("Centros de Distribución")
+            ]),
             _vm._v(" "),
             _c(
-              "tbody",
-              _vm._l(_vm.centrosDistribucion, function(item, index) {
-                return _c("tr", { key: index }, [
-                  _c("th", { attrs: { scope: "row" } }, [
-                    _vm._v(_vm._s(item.N))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _vm._v("X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y))
-                  ])
-                ])
-              }),
-              0
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c("h4", { staticClass: "fredoka textocolor" }, [
-          _vm._v("Puntos de Venta")
-        ]),
-        _vm._v(" "),
-        _c(
-          "table",
-          { staticClass: "table table-bordered cardaux textocolor" },
-          [
-            _vm._m(8),
+              "table",
+              { staticClass: "table table-bordered cardaux textocolor" },
+              [
+                _vm._m(5),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.centrosDistribucion, function(item, index) {
+                    return _c("tr", { key: index }, [
+                      _c("th", { attrs: { scope: "row" } }, [
+                        _vm._v(_vm._s(item.N))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y)
+                        )
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c("h4", { staticClass: "fredoka textocolor" }, [
+              _vm._v("Puntos de Venta")
+            ]),
             _vm._v(" "),
             _c(
-              "tbody",
-              _vm._l(_vm.puntosVenta, function(item, index) {
-                return _c("tr", { key: index }, [
-                  _c("th", { attrs: { scope: "row" } }, [
-                    _vm._v(_vm._s(item.N))
-                  ]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _vm._v("X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y))
-                  ])
-                ])
-              }),
-              0
+              "table",
+              { staticClass: "table table-bordered cardaux textocolor" },
+              [
+                _vm._m(6),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.puntosVenta, function(item, index) {
+                    return _c("tr", { key: index }, [
+                      _c("th", { attrs: { scope: "row" } }, [
+                        _vm._v(_vm._s(item.N))
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y)
+                        )
+                      ])
+                    ])
+                  }),
+                  0
+                )
+              ]
             )
-          ]
-        )
-      ])
+          ])
+        : _vm._e()
     ])
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("label", { attrs: { for: "id" } }, [_vm._v("Total por distribuir ")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "number", min: "0", name: "id" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "text-center" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-success btn-sm", attrs: { type: "submit" } },
-        [_vm._v("Guardar")]
-      )
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
