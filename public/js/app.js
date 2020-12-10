@@ -2020,7 +2020,9 @@ __webpack_require__.r(__webpack_exports__);
       valor: '',
       valor2: '',
       puntosVenta: [],
-      centrosDistribucion: []
+      centrosDistribucion: [],
+      camiones: [],
+      nCamiones: ''
     };
   },
   created: function created() {
@@ -2033,7 +2035,25 @@ __webpack_require__.r(__webpack_exports__);
       _this.centrosDistribucion = response.data;
     });
   },
-  methods: {}
+  methods: {
+    createCamiones: function createCamiones() {
+      var camion = {
+        id: '',
+        centroDist: '',
+        puntoVenta: ''
+      };
+
+      for (var i = 0; i < this.nCamiones; i++) {
+        camion.id = i + 1;
+        this.camiones.push(camion);
+        camion = {
+          id: '',
+          centroDist: '',
+          puntoVenta: ''
+        };
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -2048,6 +2068,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Bus__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Bus */ "./resources/js/Bus.js");
+//
+//
 //
 //
 //
@@ -93598,7 +93620,39 @@ var render = function() {
               }
             }
           },
-          [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _vm._m(2)]
+          [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "id" } }, [
+                _vm._v("Total camiones Día:")
+              ]),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.nCamiones,
+                    expression: "nCamiones"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "number", name: "id", min: "0" },
+                domProps: { value: _vm.nCamiones },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.nCamiones = $event.target.value
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _vm._m(1)
+          ]
         )
       ]),
       _vm._v(" "),
@@ -93615,7 +93669,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "input-group mb-3" }, [
-              _vm._m(3),
+              _vm._m(2),
               _vm._v(" "),
               _c(
                 "select",
@@ -93665,7 +93719,7 @@ var render = function() {
             _vm._v(" "),
             _vm.valor != 0
               ? _c("div", { staticClass: "input-group mb-3" }, [
-                  _vm._m(4),
+                  _vm._m(3),
                   _vm._v(" "),
                   _c(
                     "select",
@@ -93735,13 +93789,13 @@ var render = function() {
             _vm._v(" "),
             _vm.valor2 != 0 && _vm.valor != 0
               ? _c("div", { staticClass: "input-group mb-3" }, [
-                  _vm._m(5),
+                  _vm._m(4),
                   _vm._v(" "),
-                  _vm._m(6)
+                  _vm._m(5)
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm._m(7)
+            _vm._m(6)
           ]
         )
       ]),
@@ -93755,7 +93809,7 @@ var render = function() {
           "table",
           { staticClass: "table table-bordered cardaux textocolor" },
           [
-            _vm._m(8),
+            _vm._m(7),
             _vm._v(" "),
             _c(
               "tbody",
@@ -93783,7 +93837,7 @@ var render = function() {
           "table",
           { staticClass: "table table-bordered cardaux textocolor" },
           [
-            _vm._m(9),
+            _vm._m(8),
             _vm._v(" "),
             _c(
               "tbody",
@@ -93817,19 +93871,6 @@ var staticRenderFns = [
       _c("input", {
         staticClass: "form-control",
         attrs: { type: "number", min: "0", name: "id" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("label", { attrs: { for: "id" } }, [_vm._v("Total camiones Día:")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "number", name: "id", min: "0" }
       })
     ])
   },
@@ -93967,29 +94008,36 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container mt-5 pt-4" }, [
-    _c(
-      "form",
-      {
-        attrs: { enctype: "multipart/form-data" },
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.sendTXT($event)
+    _c("div", { staticClass: "container my-3 mx-3 cardaux" }, [
+      _c(
+        "form",
+        {
+          staticClass: "px-3",
+          attrs: { enctype: "multipart/form-data" },
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.sendTXT($event)
+            }
           }
-        }
-      },
-      [
-        _c("input", {
-          staticClass: "form-control",
-          attrs: { type: "file", name: "archivo", id: "file" },
-          on: { change: _vm.onFileChange }
-        }),
-        _vm._v(" "),
-        _c("button", { staticClass: "btn btn-success my-3" }, [
-          _vm._v("Enviar")
-        ])
-      ]
-    )
+        },
+        [
+          _c("h3", { staticClass: "fredoka textocolor py-3" }, [
+            _vm._v("Ingresar Archivo de coordenadas")
+          ]),
+          _vm._v(" "),
+          _c("input", {
+            staticClass: "form-control",
+            attrs: { type: "file", name: "archivo", id: "file" },
+            on: { change: _vm.onFileChange }
+          }),
+          _vm._v(" "),
+          _c("button", { staticClass: "btn btn-success my-3" }, [
+            _vm._v("Enviar")
+          ])
+        ]
+      )
+    ])
   ])
 }
 var staticRenderFns = []

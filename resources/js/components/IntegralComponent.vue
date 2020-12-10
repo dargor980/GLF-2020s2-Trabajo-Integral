@@ -1,11 +1,13 @@
 <template>
     <div class="container mt-5 pt-4">
-        
-        <form @submit.prevent="sendTXT" enctype="multipart/form-data">
-            <input type="file" class="form-control"  name="archivo" id="file" @change="onFileChange">
-            
-            <button class="btn btn-success my-3">Enviar</button>
-        </form>
+        <div class="container my-3 mx-3 cardaux">
+            <form class="px-3" @submit.prevent="sendTXT" enctype="multipart/form-data">
+                <h3 class="fredoka textocolor py-3">Ingresar Archivo de coordenadas</h3>
+                <input type="file" class="form-control"  name="archivo" id="file" @change="onFileChange">
+                
+                <button class="btn btn-success my-3">Enviar</button>
+            </form>
+        </div>
     </div>
 </template>
 

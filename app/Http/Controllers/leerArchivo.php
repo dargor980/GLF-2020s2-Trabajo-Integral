@@ -58,6 +58,16 @@ class leerArchivo extends Controller
             }
         }
 
+        $oldDataVenta= punto_Venta::all();
+        foreach($oldDataVenta as $row){
+            $row->delete();
+        }
+
+        $oldDataDist= centro_distribucion::all();
+        foreach($oldDataDist as $row){
+            $row->delete();
+        }
+
         //Store the data in the DB
         foreach($content as $data){
             $row= explode(";",$data);

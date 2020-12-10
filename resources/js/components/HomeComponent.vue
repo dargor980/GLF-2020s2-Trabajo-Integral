@@ -11,7 +11,7 @@
                     </div>
                     <div class="form-group">
                         <label for="id">Total camiones Día:</label> 
-                        <input type="number" name="id" min="0" class="form-control"> 
+                        <input type="number" name="id" min="0" class="form-control" v-model="nCamiones"> 
                     </div>
 
 
@@ -112,6 +112,8 @@ export default {
             valor2:'',
             puntosVenta:[],
             centrosDistribucion:[],
+            camiones:[],
+            nCamiones:'',
         }
     },
 
@@ -125,7 +127,15 @@ export default {
     },
 
     methods:{
-
+        createCamiones(){
+            var camion={id:'', centroDist:'', puntoVenta:''};
+            for(var i=0; i<this.nCamiones;i++)
+            {
+                camion.id=i+1;
+                this.camiones.push(camion);
+                camion={id:'', centroDist:'', puntoVenta:''};
+            }
+        },
     },
 
 }

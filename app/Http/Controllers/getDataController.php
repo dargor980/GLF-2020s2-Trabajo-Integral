@@ -16,6 +16,5 @@ class getDataController extends Controller
     public function getCentrosDistribucion(){
         $data= centro_distribucion::all();
         return $data;
-
     }
 }
