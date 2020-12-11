@@ -2016,18 +2016,77 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       valor: '',
       valor2: '',
+      cantidad: '',
       puntosVenta: [],
       centrosDistribucion: [],
-      dTotal: '',
+      dRestante: '',
       camionesD: '',
       camiones: [],
+      //Variables control de vistas
       option1: true,
-      option2: false
+      option2: false,
+      option3: false,
+      form1: true,
+      form2: false,
+      dist: false,
+      form3: false
     };
   },
   created: function created() {
@@ -2044,30 +2103,121 @@ __webpack_require__.r(__webpack_exports__);
     homeControl1: function homeControl1() {
       this.option1 = false;
       this.option2 = true;
-      console.log(this.dTotal, this.camionesD);
+      this.option3 = false;
+      console.log("Camiones:", this.camiones);
       return;
     },
     homeControl2: function homeControl2() {
+      this.option1 = false;
       this.option2 = true;
+      this.option3 = false;
       return;
+    },
+    backForm1: function backForm1() {
+      this.form1 = true;
+      this.form2 = false;
+      this.form3 = false;
+      this.dist = false;
+    },
+    formControl1: function formControl1() {
+      this.form1 = false;
+      this.form2 = true;
+      this.dist = true;
+    },
+    formControl2: function formControl2() {
+      this.form1 = false;
+      this.form2 = false;
+      this.form3 = true;
+      this.dist = true;
+    },
+    homeControl3: function homeControl3() {
+      this.option2 = false;
+      this.option1 = false;
+      this.option3 = true;
     },
     createCamiones: function createCamiones() {
       var camion = {
         id: '',
         centroDist: '',
-        puntoVenta: ''
+        puntoVenta: [],
+        cantdisponible: 1000
       };
 
-      for (var i = 0; i < this.nCamiones; i++) {
+      for (var i = 0; i < parseInt(this.camionesD); i++) {
         camion.id = i + 1;
         this.camiones.push(camion);
         camion = {
           id: '',
           centroDist: '',
-          puntoVenta: ''
+          puntoVenta: [],
+          cantdisponible: 1000
         };
       }
-    }
+
+      this.homeControl1();
+    },
+    asignarDistribuidor: function asignarDistribuidor(id) {
+      if (this.valor == 0 || this.valor == '') {
+        swal("Seleccione un centro de distribución antes de continuar.", {
+          className: "alertas",
+          title: "Aviso",
+          icon: "warning"
+        });
+        return;
+      }
+
+      for (var i = 0; i < this.camiones.length; i++) {
+        if (this.camiones[i].id == id) {
+          this.camiones[i].centroDist = this.valor;
+          console.log(this.camiones[i]);
+        }
+      }
+
+      this.formControl1();
+    },
+    asignarPuntoVenta: function asignarPuntoVenta(id) {
+      if (this.valor2 == 0 || this.valor2 == '' || this.cantidad == '' || this.cantidad == 0) {
+        swal("Rellene los campos antes de continuar", {
+          className: "alertas",
+          title: "Aviso",
+          icon: "warning"
+        });
+        return;
+      }
+
+      var pVenta = {
+        id: '',
+        cant: ''
+      };
+
+      for (var i = 0; i < this.camiones.length; i++) {
+        if (this.camiones[i].id == id) {
+          if (this.camiones[i].cantdisponible >= this.cantidad) {
+            pVenta.id = this.valor2;
+            pVenta.cant = this.cantidad;
+            this.camiones[i].puntoVenta.push(pVenta);
+            this.camiones[i].cantdisponible = this.camiones[i].cantdisponible - this.cantidad;
+          } else {
+            swal("El camión sólo puede llevar 1000 productos en un día", {
+              className: "alertas",
+              title: "Capacidad Excedida",
+              icon: "error"
+            });
+            return;
+          }
+        }
+      }
+
+      this.cantidad = '';
+
+      for (var j = 0; j < this.puntosVenta.length; j++) {
+        if (this.puntosVenta[j].N == this.valor2) {
+          this.puntosVenta.splice(j, 1);
+          return;
+        }
+      }
+    },
+    generarRuta: function generarRuta() {}
   }
 });
 
@@ -2107,6 +2257,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
+    swal("Para iniciar por favor ingrese un archivo .txt con las coordenadas para luego generar la hoja de rutas.", {
+      className: "alertas",
+      title: "Bienvenido!"
+    });
     /*
         cargar archivo txt;        P;N;x,y;
         P: punto venta
@@ -93619,52 +93773,27 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container mt-5 pt-4" }, [
+    _c("h1", { staticClass: "textocolor py-3" }, [
+      _vm._v("Nueva Hoja de Rutas")
+    ]),
+    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-8" }, [
+      _c("div", { staticClass: "col-12" }, [
         _vm.option1 == true
           ? _c(
               "form",
               {
-                staticClass: "cardaux textocolor p-3",
+                staticClass: "cardaux textocolor p-4",
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
+                    return _vm.createCamiones($event)
                   }
                 }
               },
               [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { for: "id" } }, [
-                    _vm._v("Total por distribuir ")
-                  ]),
-                  _vm._v(" "),
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.dTotal,
-                        expression: "dTotal"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "number", min: "0", name: "id" },
-                    domProps: { value: _vm.dTotal },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.dTotal = $event.target.value
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("label", { attrs: { for: "id" } }, [
-                    _vm._v("Total camiones Día:")
-                  ]),
+                _c("div", { staticClass: "input-group" }, [
+                  _vm._m(0),
                   _vm._v(" "),
                   _c("input", {
                     directives: [
@@ -93689,169 +93818,357 @@ var render = function() {
                   })
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "text-center" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success btn-sm",
-                      attrs: { id: "btn1", type: "submit" },
-                      on: { click: _vm.homeControl1 }
-                    },
-                    [_vm._v("Guardar")]
-                  )
-                ])
+                _vm._m(1)
               ]
             )
           : _vm._e()
-      ]),
-      _vm._v(" "),
-      _vm.option2 == true
-        ? _c("div", { staticClass: "col-6" }, [
+      ])
+    ]),
+    _vm._v(" "),
+    _vm.option2 == true
+      ? _c("h3", { staticClass: "fredoka textocolor" }, [
+          _vm._v("Listado de Camiones")
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.option2 == true
+      ? _c(
+          "div",
+          { staticClass: "row accordion cardaux", attrs: { id: "automatas" } },
+          [
             _c(
-              "form",
+              "ul",
               {
-                staticClass: "cardaux textocolor p-3",
-                on: {
-                  submit: function($event) {
-                    $event.preventDefault()
-                  }
-                }
+                staticClass:
+                  "col-lg-3 col-sm-12 my-2 list-group list-group-flush",
+                on: { click: _vm.backForm1 }
               },
-              [
-                _c("div", { staticClass: "input-group mb-3" }, [
-                  _vm._m(0),
-                  _vm._v(" "),
-                  _c(
-                    "select",
-                    {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.valor,
-                          expression: "valor"
-                        }
-                      ],
-                      staticClass: "custom-select",
-                      attrs: { id: "inputGroupSelect01" },
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.valor = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
-                      }
-                    },
-                    [
-                      _c("option", { attrs: { selected: "", value: "0" } }, [
-                        _vm._v("Selecciona...")
-                      ]),
-                      _vm._v(" "),
-                      _vm._l(_vm.centrosDistribucion, function(item, index) {
-                        return _c(
-                          "option",
-                          { key: index, domProps: { value: item.id } },
-                          [_vm._v(_vm._s(item.N))]
-                        )
-                      })
-                    ],
-                    2
-                  )
-                ]),
-                _vm._v(" "),
-                _vm.valor != 0
-                  ? _c("div", { staticClass: "input-group mb-3" }, [
-                      _vm._m(1),
-                      _vm._v(" "),
+              _vm._l(_vm.camiones, function(item, index) {
+                return _c(
+                  "li",
+                  {
+                    key: index,
+                    staticClass:
+                      "list-group-item analisis collapsed info textocolor",
+                    attrs: {
+                      "data-toggle": "collapse",
+                      "data-target": "#camion_" + item.id,
+                      "aria-expanded": "false",
+                      "aria-controls": "camion_" + item.id
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                Camión N°" +
+                        _vm._s(item.id) +
+                        "\n            "
+                    )
+                  ]
+                )
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "col-lg-7 col-sm-12 my-2" },
+              _vm._l(_vm.camiones, function(item, index) {
+                return _c(
+                  "div",
+                  {
+                    key: index,
+                    staticClass: "collapse",
+                    attrs: {
+                      id: "camion_" + item.id,
+                      "data-parent": "#automatas"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "my-3" }, [
                       _c(
-                        "select",
-                        {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.valor2,
-                              expression: "valor2"
-                            }
-                          ],
-                          staticClass: "custom-select",
-                          attrs: { id: "inputGroupSelect02" },
-                          on: {
-                            change: function($event) {
-                              var $$selectedVal = Array.prototype.filter
-                                .call($event.target.options, function(o) {
-                                  return o.selected
-                                })
-                                .map(function(o) {
-                                  var val = "_value" in o ? o._value : o.value
-                                  return val
-                                })
-                              _vm.valor2 = $event.target.multiple
-                                ? $$selectedVal
-                                : $$selectedVal[0]
-                            }
-                          }
-                        },
+                        "div",
+                        { staticClass: "row d-flex justify-content-center" },
                         [
-                          _c("option", { attrs: { selected: "" } }, [
-                            _vm._v("Selecciona...")
-                          ]),
-                          _vm._v(" "),
-                          _vm._l(_vm.puntosVenta, function(item, index) {
-                            return _c(
-                              "option",
-                              { key: index, domProps: { value: item.id } },
-                              [_vm._v(_vm._s(item.N))]
+                          _c("h4", { staticClass: "textocolor fredoka" }, [
+                            _vm._v("Camión N°" + _vm._s(item.id))
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _vm.form1 == true
+                        ? _c(
+                            "form",
+                            {
+                              staticClass: "textocolor p-3",
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.asignarDistribuidor(item.id)
+                                }
+                              }
+                            },
+                            [
+                              _c("div", { staticClass: "input-group mb-3" }, [
+                                _vm._m(2, true),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.valor,
+                                        expression: "valor"
+                                      }
+                                    ],
+                                    staticClass: "custom-select",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.valor = $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "option",
+                                      { attrs: { selected: "", value: "0" } },
+                                      [_vm._v("Selecciona...")]
+                                    ),
+                                    _vm._v(" "),
+                                    _vm._l(_vm.centrosDistribucion, function(
+                                      item,
+                                      index
+                                    ) {
+                                      return _c(
+                                        "option",
+                                        {
+                                          key: index,
+                                          domProps: { value: item.N }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Distribuidor " + _vm._s(item.N)
+                                          )
+                                        ]
+                                      )
+                                    })
+                                  ],
+                                  2
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _vm._m(3, true)
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.form2 == true || _vm.dist == true
+                        ? _c("div", { staticClass: "input-group mb-3 p-3" }, [
+                            _vm._m(4, true),
+                            _vm._v(" "),
+                            _c("input", {
+                              staticClass: "form-control",
+                              attrs: { type: "text", disabled: "" },
+                              domProps: {
+                                value: "Distribuidor" + item.centroDist
+                              }
+                            })
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.form2 == true
+                        ? _c("div", { staticClass: "text-center" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-success",
+                                on: { click: _vm.formControl2 }
+                              },
+                              [_vm._v("Asignar punto de venta")]
                             )
-                          })
-                        ],
-                        2
-                      )
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.valor2 != 0 && _vm.valor != 0
-                  ? _c("div", { staticClass: "form-group" }, [
-                      _c("label", { attrs: { for: "id" } }, [
-                        _vm._v("Cantidad por distruibuir")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.form3 == true
+                        ? _c("h4", { staticClass: "textocolor p-3" }, [
+                            _vm._v("Asignar punto de venta destino")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.form3 == true
+                        ? _c(
+                            "form",
+                            {
+                              staticClass: "textocolor p-3",
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.asignarPuntoVenta(item.id)
+                                }
+                              }
+                            },
+                            [
+                              _c("div", { staticClass: "input-group mb-3" }, [
+                                _vm._m(5, true),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.valor2,
+                                        expression: "valor2"
+                                      }
+                                    ],
+                                    staticClass: "custom-select",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.valor2 = $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "option",
+                                      {
+                                        attrs: { selected: "" },
+                                        domProps: { value: 0 }
+                                      },
+                                      [_vm._v("Selecciona...")]
+                                    ),
+                                    _vm._v(" "),
+                                    _vm._l(_vm.puntosVenta, function(
+                                      item,
+                                      index
+                                    ) {
+                                      return _c(
+                                        "option",
+                                        {
+                                          key: index,
+                                          domProps: { value: item.N }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Punto Venta " + _vm._s(item.N)
+                                          )
+                                        ]
+                                      )
+                                    })
+                                  ],
+                                  2
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "input-group mb-3" }, [
+                                _vm._m(6, true),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.cantidad,
+                                      expression: "cantidad"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: {
+                                    type: "number",
+                                    min: "0",
+                                    max: "1000"
+                                  },
+                                  domProps: { value: _vm.cantidad },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.cantidad = $event.target.value
+                                    }
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _vm._m(7, true)
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "py-3 px-3" }, [
+                        _c("h4", { staticClass: "textocolor" }, [
+                          _vm._v(
+                            " Cantidad restante de productos disponible: " +
+                              _vm._s(item.cantdisponible)
+                          )
+                        ])
                       ]),
                       _vm._v(" "),
-                      _c("input", {
-                        staticClass: "form-control",
-                        attrs: {
-                          type: "number",
-                          min: "0",
-                          max: "1000",
-                          name: "id",
-                          placeholder: "1000 max."
-                        }
-                      })
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.valor2 != 0 && _vm.valor != 0
-                  ? _c("div", { staticClass: "input-group mb-3" }, [
-                      _vm._m(2),
+                      _c("div", { staticClass: "py-3 px-3" }, [
+                        _c(
+                          "table",
+                          { staticClass: "table table-bordered textocolor" },
+                          [
+                            _vm._m(8, true),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(item.puntoVenta, function(el, index2) {
+                                return _c("tr", { key: index2 }, [
+                                  _c("th", [_vm._v(_vm._s(el.id))]),
+                                  _vm._v(" "),
+                                  _c("th", [_vm._v(_vm._s(el.cant))])
+                                ])
+                              }),
+                              0
+                            )
+                          ]
+                        )
+                      ]),
                       _vm._v(" "),
-                      _vm._m(3)
+                      _vm._m(9, true)
                     ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm._m(4)
-              ]
+                  ]
+                )
+              }),
+              0
             )
-          ])
-        : _vm._e(),
+          ]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _vm.option3 == true ? _c("div", { staticClass: "col-6" }) : _vm._e(),
       _vm._v(" "),
-      _vm.option2 == true
+      _vm.option3 == true
         ? _c("div", { staticClass: "col-6" }, [
             _c("h4", { staticClass: "fredoka textocolor" }, [
               _vm._v("Centros de Distribución")
@@ -93861,7 +94178,7 @@ var render = function() {
               "table",
               { staticClass: "table table-bordered cardaux textocolor" },
               [
-                _vm._m(5),
+                _vm._m(10),
                 _vm._v(" "),
                 _c(
                   "tbody",
@@ -93891,7 +94208,7 @@ var render = function() {
               "table",
               { staticClass: "table table-bordered cardaux textocolor" },
               [
-                _vm._m(6),
+                _vm._m(11),
                 _vm._v(" "),
                 _c(
                   "tbody",
@@ -93913,6 +94230,10 @@ var render = function() {
               ]
             )
           ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.option3 == true
+        ? _c("div", { staticClass: "container cardaux" })
         : _vm._e()
     ])
   ])
@@ -93923,13 +94244,23 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("label", { staticClass: "input-group-text", attrs: { for: "id" } }, [
+        _vm._v("N° de camiones a trabajar:")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "text-center my-3" }, [
       _c(
-        "label",
+        "button",
         {
-          staticClass: "input-group-text",
-          attrs: { for: "inputGroupSelect01" }
+          staticClass: "btn btn-success btn-sm",
+          attrs: { id: "btn1", type: "submit" }
         },
-        [_vm._v("Centros de distribucion")]
+        [_vm._v("Siguiente")]
       )
     ])
   },
@@ -93938,13 +94269,20 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("label", { staticClass: "input-group-text" }, [
+        _vm._v("Seleccione centro de distribución")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "text-center" }, [
       _c(
-        "label",
-        {
-          staticClass: "input-group-text",
-          attrs: { for: "inputGroupSelect01" }
-        },
-        [_vm._v("Puntos de venta")]
+        "button",
+        { staticClass: "btn btn-success btn-sm", attrs: { type: "submit" } },
+        [_vm._v("Asignar Centro")]
       )
     ])
   },
@@ -93953,33 +94291,30 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "input-group-prepend" }, [
-      _c(
-        "label",
-        {
-          staticClass: "input-group-text",
-          attrs: { for: "inputGroupSelect02" }
-        },
-        [_vm._v("Seleccione Camión")]
-      )
+      _c("label", { staticClass: "input-group-text" }, [
+        _vm._v("Centro de distribución")
+      ])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "select",
-      { staticClass: "custom-select", attrs: { id: "inputGroupSelect01" } },
-      [
-        _c("option", { attrs: { selected: "" } }, [_vm._v("Selecciona...")]),
-        _vm._v(" "),
-        _c("option", { attrs: { value: "1" } }, [_vm._v("One")]),
-        _vm._v(" "),
-        _c("option", { attrs: { value: "2" } }, [_vm._v("Two")]),
-        _vm._v(" "),
-        _c("option", { attrs: { value: "3" } }, [_vm._v("Three")])
-      ]
-    )
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("label", { staticClass: "input-group-text" }, [
+        _vm._v("Seleccione punto de venta")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("label", { staticClass: "input-group-text" }, [
+        _vm._v("Ingrese Cantidad de productos")
+      ])
+    ])
   },
   function() {
     var _vm = this
@@ -93991,6 +94326,28 @@ var staticRenderFns = [
         { staticClass: "btn btn-success btn-sm", attrs: { type: "submit" } },
         [_vm._v("Agregar")]
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", { staticClass: "thead-dark" }, [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Punto de venta")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scopte: "col" } }, [_vm._v("cantidad productos")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "text-center" }, [
+      _c("button", { staticClass: "btn btn-lg btn-success" }, [
+        _vm._v("Generar Hoja de rutas")
+      ])
     ])
   },
   function() {
