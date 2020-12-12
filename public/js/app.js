@@ -2079,6 +2079,25 @@ __webpack_require__.r(__webpack_exports__);
       dRestante: '',
       camionesD: '',
       camiones: [],
+      nodos: [{
+        id: 'estacionamiento',
+        label: 'estacionamiento'
+      }],
+      nodo: {
+        id: '',
+        label: '',
+        x: '',
+        y: ''
+      },
+      aristas: [],
+      arista: {
+        from: '',
+        label: '',
+        to: '',
+        color: {
+          color: 'rgb(0,0,0)'
+        }
+      },
       //Variables control de vistas
       option1: true,
       option2: false,
@@ -2098,6 +2117,34 @@ __webpack_require__.r(__webpack_exports__);
     axios.get('/centrosdistribucion').then(function (response) {
       _this.centrosDistribucion = response.data;
     });
+
+    for (var i = 0; i < this.puntosVenta.length; i++) {
+      this.nodo.id = this.puntosVenta[i].N;
+      this.nodo.label = this.puntosVenta[i].N;
+      this.nodo.x = this.puntosVenta[i].x;
+      this.nodo.y = this.puntosVenta[i].y;
+      this.nodos.push(this.nodo);
+      this.nodo = {
+        id: '',
+        label: '',
+        x: '',
+        y: ''
+      };
+    }
+
+    for (var j = 0; j < this.centrosDistribucion.length; j++) {
+      this.nodo.id = this.centrosDistribucion[j].N;
+      this.nodo.label = this.centrosDistribucion[j].N;
+      this.nodo.x = this.centrosDistribucion[j].x;
+      this.nodo.y = this.centrosDistribucion[j].y;
+      this.nodos.push(this.nodo);
+      this.nodo = {
+        id: '',
+        label: '',
+        x: '',
+        y: ''
+      };
+    }
   },
   methods: {
     homeControl1: function homeControl1() {
@@ -2217,7 +2264,26 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
-    generarRuta: function generarRuta() {}
+    distanciaPuntoAPunto: function distanciaPuntoAPunto(puntoA, puntoB) {
+      return parseFloat(Math.sqrt(Math.pow(puntoB.x - puntoA.x, 2) + Math.pow(puntoB.y - puntoA.y, 2)));
+    },
+    generarAristas: function generarAristas() {
+      for (var i = 0; i < this.nodos.length; i++) {
+        for (var j = 0; j < this.nodos.length; j++) {
+          if (i != j) {
+            this.arista.from = this.nodos[i].N;
+            this.arista.to = this.nodos[j].N;
+            this.arista.label = this.distanciaPuntoAPunto(this.nodos[i], this.nodos[j]);
+            this.aristas.push(this.arista);
+            this.arista.from = this.nodos[j].N;
+            this.artista.to = this.nodos[i].N;
+            this.arista.label = this.distanciaPuntoAPunto(this.nodos[i], this.nodos[j]);
+            this.aristas.push(this.arista);
+          }
+        }
+      }
+    },
+    generarRuta: function generarRuta(camion) {}
   }
 });
 
@@ -106957,14 +107023,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!***************************************************!*\
   !*** ./resources/js/components/HomeComponent.vue ***!
   \***************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _HomeComponent_vue_vue_type_template_id_782dcf83___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./HomeComponent.vue?vue&type=template&id=782dcf83& */ "./resources/js/components/HomeComponent.vue?vue&type=template&id=782dcf83&");
 /* harmony import */ var _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./HomeComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/HomeComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -106994,7 +107061,7 @@ component.options.__file = "resources/js/components/HomeComponent.vue"
 /*!****************************************************************************!*\
   !*** ./resources/js/components/HomeComponent.vue?vue&type=script&lang=js& ***!
   \****************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

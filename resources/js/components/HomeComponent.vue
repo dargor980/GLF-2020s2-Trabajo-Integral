@@ -170,6 +170,12 @@ export default {
             dRestante:'',
             camionesD:'',
             camiones:[],
+            
+            nodos:[{id:'estacionamiento',label:'estacionamiento'}],
+            nodo:{id:'', label:'', x:'', y:''},
+            aristas:[],
+            arista:{from:'', label:'', to:'', color: {color:'rgb(0,0,0)'}},
+
 
             //Variables control de vistas
             option1:true,
@@ -188,7 +194,25 @@ export default {
         });
         axios.get('/centrosdistribucion').then(response =>{
             this.centrosDistribucion=response.data;
-        })
+        });
+
+        for(var i=0; i<this.puntosVenta.length;i++){
+            this.nodo.id= this.puntosVenta[i].N;
+            this.nodo.label= this.puntosVenta[i].N;
+            this.nodo.x= this.puntosVenta[i].x;
+            this.nodo.y= this.puntosVenta[i].y;
+            this.nodos.push(this.nodo);
+            this.nodo={id:'', label:'', x:'', y:''};
+        }
+
+        for(var j=0; j<this.centrosDistribucion.length; j++){
+            this.nodo.id= this.centrosDistribucion[j].N;
+            this.nodo.label= this.centrosDistribucion[j].N;
+            this.nodo.x= this.centrosDistribucion[j].x;
+            this.nodo.y= this.centrosDistribucion[j].y;
+            this.nodos.push(this.nodo);
+            this.nodo={id:'', label:'', x:'', y:''};
+        }
     },
 
     methods:{
@@ -295,9 +319,32 @@ export default {
             }   
         },
 
-        generarRuta(){
+
+        distanciaPuntoAPunto(puntoA, puntoB){
+            return parseFloat(Math.sqrt(Math.pow(puntoB.x-puntoA.x,2)+ Math.pow(puntoB.y-puntoA.y,2)));
+        },
+
+        generarAristas(){
+            for(var i=0; i<this.nodos.length;i++){
+                for(var j=0; j<this.nodos.length;j++){
+                    if(i !=j){
+                        this.arista.from= this.nodos[i].N;
+                        this.arista.to= this.nodos[j].N;
+                        this.arista.label= this.distanciaPuntoAPunto(this.nodos[i],this.nodos[j]);
+                        this.aristas.push(this.arista);
+                        this.arista.from= this.nodos[j].N;
+                        this.artista.to= this.nodos[i].N;
+                        this.arista.label= this.distanciaPuntoAPunto(this.nodos[i],this.nodos[j]);
+                        this.aristas.push(this.arista);
+                    }
+                }
+            }
+        },
+
+        generarRuta(camion){
 
         },
+        
     },
 }
 </script>
