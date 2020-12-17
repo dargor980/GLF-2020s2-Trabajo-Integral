@@ -1908,6 +1908,8 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2146,7 +2148,7 @@ __webpack_require__.r(__webpack_exports__);
       };
     }
   },
-  methods: {
+  methods: _defineProperty({
     homeControl1: function homeControl1() {
       this.option1 = false;
       this.option2 = true;
@@ -2283,8 +2285,56 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
-    generarRuta: function generarRuta(camion) {}
-  }
+    generarRuta: function generarRuta(camion) {
+      var estacinamiento = {
+        x: 0,
+        y: 0
+      };
+      var distanciaCentro_PuntoVenta = 0;
+      var distanciaEstacinamiento_Centro = 0;
+      var distanciaPuntoVenta_PuntoVenta = 0;
+      var distanciaPuntoVenta_Estacionamiento = 0;
+      distanciaEstacinamiento_Centro = this.distanciaPuntoAPunto(estacionamiento, camion.centroDist);
+
+      for (var i = 0; i < camion.length; i++) {
+        for (var j = 0; j < camion[i].puntoVenta.length; j++) {
+          if (camion[i].puntoVenta[0]) {
+            distanciaCentro_PuntoVenta = this.distanciaPuntoAPunto(camion.centroDist, camion[i].puntosVenta[0]);
+          }
+
+          distanciaPuntoVenta_PuntoVenta = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].puntoVenta[j + 1]);
+
+          if (camion[i].puntoVenta[j - 1]) {
+            distanciaPuntoVenta_Estacionamiento = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], estacionamiento);
+          }
+        }
+      }
+    }
+  }, "generarRuta", function generarRuta(camion) {
+    var estacinamiento = {
+      x: 0,
+      y: 0
+    };
+    var distanciaCentro_PuntoVenta = 0;
+    var distanciaEstacinamiento_Centro = 0;
+    var distanciaPuntoVenta_PuntoVenta = 0;
+    var distanciaPuntoVenta_Estacionamiento = 0;
+    distanciaEstacinamiento_Centro = this.distanciaPuntoAPunto(estacionamiento, camion.centroDist);
+
+    for (var i = 0; i < camion.length; i++) {
+      for (var j = 0; j < camion[i].puntoVenta.length; j++) {
+        if (camion[i].puntoVenta[0]) {
+          distanciaCentro_PuntoVenta = this.distanciaPuntoAPunto(camion.centroDist, camion[i].puntosVenta[0]);
+        }
+
+        distanciaPuntoVenta_PuntoVenta = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].puntoVenta[j + 1]);
+
+        if (camion[i].puntoVenta[j - 1]) {
+          distanciaPuntoVenta_Estacionamiento = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], estacionamiento);
+        }
+      }
+    }
+  })
 });
 
 /***/ }),
