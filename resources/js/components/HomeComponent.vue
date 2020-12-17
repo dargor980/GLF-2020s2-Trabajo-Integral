@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-5 pt-4">
-        <h1 class="textocolor py-3">Nueva Hoja de Rutas</h1>  
+        <h1 class="fredoka textocolor py-3">Nueva Hoja de Rutas</h1>  
         <div class="row">
             <div class="col-12">
                 <form @submit.prevent="createCamiones" class="cardaux textocolor p-4" v-if="option1==true">  
@@ -341,8 +341,29 @@ export default {
             }
         },
 
-        generarRuta(camion){
+        
 
+        generarRuta(camion){
+            var estacinamiento = {x:0, y:0};
+            var distanciaCentro_PuntoVenta = 0;
+            var distanciaEstacinamiento_Centro = 0;
+            var distanciaPuntoVenta_PuntoVenta = 0;
+            var distanciaPuntoVenta_Estacionamiento = 0;
+            distanciaEstacinamiento_Centro = this.distanciaPuntoAPunto(estacionamiento, camion.centroDist);
+            for(var i=0; i<camion.length; i++){
+                for(var j=0; j<camion[i].puntoVenta.length; j++){
+                    if(camion[i].puntoVenta[0]){
+                        distanciaCentro_PuntoVenta = this.distanciaPuntoAPunto(camion.centroDist, camion[i].puntosVenta[0]);
+                    }
+
+                    distanciaPuntoVenta_PuntoVenta = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].puntoVenta[j+1]);
+
+                    if(camion[i].puntoVenta[j-1]){
+                        distanciaPuntoVenta_Estacionamiento = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], estacionamiento);
+                    }
+    
+                }
+            }
         },
         
     },
