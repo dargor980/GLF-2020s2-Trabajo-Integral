@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\centro_distribucion;
 use App\punto_Venta;
+use Illuminate\Support\Facades\Log;
 
 class leerArchivo extends Controller
 {
     public function readText(Request $request){
         //Store the file in storage/app/public
+        Log::info("Iniciando método readTxt.");
         $file= $request->file('texto');
         $nombre= "RUTAS.txt";
         \Storage::disk('local')->put($nombre, \File::get($file));
@@ -20,12 +22,12 @@ class leerArchivo extends Controller
         while($linea = fgets($archivo)){
             array_push($content,$linea);
         }
-
+        Log::info("Validando formato.");
         //Text format validation.
         foreach($content as $item){
             $aux= explode(";", $item); 
             if(count($aux)!=3){
-      
+                Log::error("Formato del archivo inválido");
                 return 'INVALID_FORMAT';
             }
             else{
@@ -37,38 +39,44 @@ class leerArchivo extends Controller
                                 if(is_string($aux2[1]) && intval($aux2[1],10)){       
                                 }
                                 else{
+                                    Log::error("Formato del archivo inválido");
                                     return 'INVALID_FORMAT';
                                 }
                             }
                             else{
+                                Log::error("Formato del archivo inválido");
                                 return 'INVALID_FORMAT';
                             }
                         }
                         else{
+                            Log::error("Formato del archivo inválido");
                             return 'INVALID_FORMAT';
                         }
                     }
                     else{
+                        Log::error("Formato del archivo inválido");
                         return 'INVALID_FORMAT';
                     }
                 }
                 else{
+                    Log::error("Formato del archivo inválido");
                     return 'INVALID_FORMAT';
                 }
             }
         }
-
+        Log::info("Eliminando informacion anterior paso 1/2");
         $oldDataVenta= punto_Venta::all();
         foreach($oldDataVenta as $row){
             $row->delete();
         }
-
+        Log::info("Eliminando informacion anterior paso 2/2");
         $oldDataDist= centro_distribucion::all();
         foreach($oldDataDist as $row){
             $row->delete();
         }
 
         //Store the data in the DB
+        Log::info("Insertando nueva información en la BD.");
         foreach($content as $data){
             $row= explode(";",$data);
             if($row[0]=="P" || $row[0]=="p"){
@@ -96,7 +104,7 @@ class leerArchivo extends Controller
                 }
             }
         }
-
+        Log::info("Método readText finalizado OK");
         return 'OK';
     }
 }

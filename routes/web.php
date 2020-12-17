@@ -24,3 +24,13 @@ Route::post('/sendtxt', [leerArchivo::class, 'readText']);
 Route::get('/puntosventa',[getDataController::class, 'getPuntosVenta']);
 
 Route::get('/centrosdistribucion', [getDataController::class, 'getCentrosDistribucion']);
+
+Route::get('/log', function() {
+    return view('log');
+});
+Route::get('/clearlog', function() {
+    file_put_contents(base_path().'/storage/logs/laravel.log', " ");
+});
+Route::get('/printlog', function() {
+    return file_get_contents(base_path().'/storage/logs/laravel.log');
+});

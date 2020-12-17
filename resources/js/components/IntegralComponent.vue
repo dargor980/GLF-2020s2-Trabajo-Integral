@@ -52,7 +52,7 @@ export default {
             fd.append('name',this.attachment.name);
             fd.append('texto',this.attachment.file);
 
-            axios.post("/sendtxt",fd).then(resp =>{
+            axios.post("sendtxt",fd).then(resp =>{
                 console.log("entró");
                 if(resp.data=='INVALID_FORMAT'){
                     swal("Formato Inválido",{
