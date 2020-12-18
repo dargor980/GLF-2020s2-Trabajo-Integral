@@ -1908,8 +1908,6 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -2148,7 +2146,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
     }
   },
-  methods: _defineProperty({
+  methods: {
     homeControl1: function homeControl1() {
       this.option1 = false;
       this.option2 = true;
@@ -2285,6 +2283,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }
     },
+    distanciaCentro_Puntov: function distanciaCentro_Puntov(camion) {
+      distancias = [];
+
+      for (var i = 0; i < camion.length; i++) {
+        for (var j = 0; j < camion[i].puntoVenta.length; j++) {
+          array = [];
+
+          for (var k = 0; k < camion[i].centroDist.length; k++) {
+            distancia = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].centroDist[k]);
+            array.push(distancia);
+          }
+
+          distancias.push(array);
+        }
+      }
+
+      rutas_cortas = [];
+      contador = 0; //uwu
+    },
     generarRuta: function generarRuta(camion) {
       var estacinamiento = {
         x: 0,
@@ -2310,31 +2327,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }
     }
-  }, "generarRuta", function generarRuta(camion) {
-    var estacinamiento = {
-      x: 0,
-      y: 0
-    };
-    var distanciaCentro_PuntoVenta = 0;
-    var distanciaEstacinamiento_Centro = 0;
-    var distanciaPuntoVenta_PuntoVenta = 0;
-    var distanciaPuntoVenta_Estacionamiento = 0;
-    distanciaEstacinamiento_Centro = this.distanciaPuntoAPunto(estacionamiento, camion.centroDist);
-
-    for (var i = 0; i < camion.length; i++) {
-      for (var j = 0; j < camion[i].puntoVenta.length; j++) {
-        if (camion[i].puntoVenta[0]) {
-          distanciaCentro_PuntoVenta = this.distanciaPuntoAPunto(camion.centroDist, camion[i].puntosVenta[0]);
-        }
-
-        distanciaPuntoVenta_PuntoVenta = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].puntoVenta[j + 1]);
-
-        if (camion[i].puntoVenta[j - 1]) {
-          distanciaPuntoVenta_Estacionamiento = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], estacionamiento);
-        }
-      }
-    }
-  })
+  }
 });
 
 /***/ }),
@@ -107365,8 +107358,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\GLF-2020s2-Trabajo-Integral\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\GLF-2020s2-Trabajo-Integral\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Users\crist\Desktop\Cursos\Grafos\GLF-2020s2-Trabajo-Integral\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Users\crist\Desktop\Cursos\Grafos\GLF-2020s2-Trabajo-Integral\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
