@@ -1,3 +1,4 @@
+
 <template>
     <div class="container mt-5 pt-4">
         <h1 class="textocolor py-3">Nueva Hoja de Rutas</h1>  
@@ -170,6 +171,9 @@ export default {
             dRestante:'',
             camionesD:'',
             camiones:[],
+
+            fabricaCentros:[],
+            centrosPuntos:[],
             
             nodos:[{id:'estacionamiento',label:'estacionamiento'}],
             nodo:{id:'', label:'', x:'', y:''},
@@ -191,14 +195,14 @@ export default {
     created(){
         axios.get('puntosventa').then(response =>{
             this.puntosVenta=response.data;[] //[p1{id,n,x,y},p2{id,n,x,y},p3{id,n,x,y}]
-            console.log("axios",this.puntosVenta);
+            //console.log("axios",this.puntosVenta);
         });
-        console.log("axios2",this.puntosVenta);
+        //console.log("axios2",this.puntosVenta);
         axios.get('centrosdistribucion').then(response =>{
             this.centrosDistribucion=response.data; //[c1{id,n,x,y},c2{id,n,x,y},c3{id,n,x,y}]
-            console.log("axios",this.centrosDistribucion);
+            //console.log("axios",this.centrosDistribucion);
         });
-        console.log("axios2",this.centrosDistribucion);
+        //console.log("axios2",this.centrosDistribucion);
         for(var i=0; i<this.puntosVenta.length;i++){
             this.nodo.id= this.puntosVenta[i].N;
             this.nodo.type= this.puntosVenta[i].type;            
@@ -208,7 +212,7 @@ export default {
             this.nodos.push(this.nodo);
             this.nodo={id:'', label:'', x:'', y:''};
         }
-        console.log("nodos1:",this.nodos);
+        //console.log("nodos1:",this.nodos);
 
         for(var j=0; j<this.centrosDistribucion.length; j++){
             this.nodo.id= this.centrosDistribucion[j].N;
@@ -219,9 +223,9 @@ export default {
             this.nodos.push(this.nodo);
             this.nodo={id:'', label:'', x:'', y:''};
         }
-        console.log("nodos2:",this.nodos);
-        console.log("centros:",this.centrosDistribucion);
-        console.log("puntos:",this.puntosVenta);
+        //console.log("nodos2:",this.nodos);
+        //console.log("centros:",this.centrosDistribucion);
+        //console.log("puntos:",this.puntosVenta);
         //console.log(this.distanciaPuntoAPunto());
         //console.log("distancia:",this.distanciaCentro_Puntov()); 
     },
@@ -331,15 +335,14 @@ export default {
             }   
         },
 
-
         distanciaPuntoAPunto(puntoA,puntoB){
-            console.log("puntoA",puntoA);
-            console.log("puntoB",puntoB);
+            //console.log("puntoA",puntoA);
+            //console.log("puntoB",puntoB);
             var x = puntoB.x-puntoA.x;
             var y = puntoB.y-puntoA.y;
-            console.log("x,y:",x,y);
+            //console.log("x,y:",x,y);
             var resultado = parseFloat(Math.sqrt(Math.pow(x,2)+ Math.pow(y,2)));
-            console.log("resultado",resultado);
+            //console.log("resultado",resultado);
             return resultado;
         },
 
@@ -361,21 +364,32 @@ export default {
         },
 
         distanciaCentro_Puntov(){
-            var distancias=[];
-            console.log("punto",this.puntosVenta);
-            console.log("centro",this.centrosDistribucion);
-            for(let j=0;j<this.puntosVenta.length;j++){
-                    var array=[];
-                    for(let k = 0 ; k<this.centrosDistribucion.length;k++){
-                        console.log("centro:",this.centrosDistribucion[k]);
-                        console.log("punto:",this.puntosVenta[j]);
-                        var distancia= this.distanciaPuntoAPunto(this.centrosDistribucion[k],this.puntosVenta[j]);
-                        console.log("distancia",distancia);
+            var distancias = [];
+            var distanciasC = []
+            //console.log("punto",this.puntosVenta);
+            //console.log("centro",this.centrosDistribucion);
+            for(let j = 0 ; j < this.puntosVenta.length ; j++){
+                    var array = [];
+                    for(let k = 0 ; k < this.centrosDistribucion.length ; k++){
+                        //console.log("centro:",this.centrosDistribucion[k]);
+                        //console.log("punto:",this.puntosVenta[j]);
+                        var distancia = this.distanciaPuntoAPunto(this.centrosDistribucion[k],this.puntosVenta[j]);
+                        //console.log("distancia",distancia);
                         array.push(this.puntosVenta[j],this.centrosDistribucion[k],distancia);
-                        console.log("array1",array);                        
+                        //console.log("array1",array);                        
                     }
                     distancias.push(array);
-                    console.log("distancias:",distancias);
+                    //console.log("distancias:",distancias);
+            }
+            for(let cen = 0; cen < this.centrosDistribucion.length ; cen++){
+                var arr = {x:0,y:0}
+                var otro = {centro:'', fabrica:'',distancia:''}
+                var distanciaC = this.distanciaPuntoAPunto(arr,this.centrosDistribucion[cen]);
+                otro.centro = this.centrosDistribucion[cen].type + this.centrosDistribucion[cen].N;
+                otro.fabrica = arr.x + ','+ arr.y;
+                otro.distancia = distanciaC
+                distanciasC.push(otro);
+                otro = {centro:'', fabrica:'',distancia:''}
             }
             var rutas_cortas=[];
             // var d1 = new Array();
@@ -383,12 +397,12 @@ export default {
             // var d2 = new Array();
             // d2 = distancias[1]
             // console.log("d1",d1, "d2",d2);
-            var myJSON = JSON.stringify(distancias);
-            console.log(myJSON);
+            //var myJSON = JSON.stringify(distancias);
+            //console.log(myJSON);
             for(let dist = 0 ; dist<distancias.length; dist++){  
-                console.log("distancias[dist]",distancias[dist]);              
+                //console.log("distancias[dist]",distancias[dist]);              
                 var min =Math.min(distancias[dist][2],distancias[dist][5]);
-                console.log("min:" ,min);
+                //console.log("min:" ,min);
                 if(distancias[dist][2] == min){
                     rutas_cortas.push([distancias[dist][0],distancias[dist][1],distancias[dist][2]]);
                 }else{
@@ -397,10 +411,23 @@ export default {
                     }
                 }
             }
-            console.log("rutas_cortas:",rutas_cortas); 
-            return rutas_cortas;          
-        },
-        
+            //console.log("rutas_cortas:",rutas_cortas); 
+            var data2 = {punto:'',centro:'',distancia:''}
+            var cercanos = [];
+            rutas_cortas.forEach(element => {
+                data2.punto = element[0].type + element[0].N;
+                data2.centro = element[1].type + element[1].N;
+                data2.distancia = element[2];
+                cercanos.push(data2);
+                data2 = {punto:'',centro:'',distancia:''}
+            });
+            console.log("distanciasC",distanciasC);
+            console.log("cercanos",cercanos);
+            //this.fabricaCentros = distanciasC;
+            //this.centrosPuntos = cercanos;
+            return cercanos;
+                     
+        }, 
     },
 }
 </script>
