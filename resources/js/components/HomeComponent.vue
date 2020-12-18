@@ -99,7 +99,7 @@
                         </div> 
 
                         <div class="text-center">
-                            <button class="btn btn-lg btn-success">Generar Hoja de rutas</button>
+                            <button class="btn btn-lg btn-success" >Generar Hoja de rutas</button>
                         </div>  
                     </div>
                 </div> 
@@ -175,7 +175,7 @@ export default {
             nodo:{id:'', label:'', x:'', y:''},
             aristas:[],
             arista:{from:'', label:'', to:'', color: {color:'rgb(0,0,0)'}},
-
+            
 
             //Variables control de vistas
             option1:true,
@@ -190,29 +190,40 @@ export default {
 
     created(){
         axios.get('puntosventa').then(response =>{
-            this.puntosVenta=response.data;
+            this.puntosVenta=response.data;[] //[p1{id,n,x,y},p2{id,n,x,y},p3{id,n,x,y}]
+            console.log("axios",this.puntosVenta);
         });
+        console.log("axios2",this.puntosVenta);
         axios.get('centrosdistribucion').then(response =>{
-            this.centrosDistribucion=response.data;
+            this.centrosDistribucion=response.data; //[c1{id,n,x,y},c2{id,n,x,y},c3{id,n,x,y}]
+            console.log("axios",this.centrosDistribucion);
         });
-
+        console.log("axios2",this.centrosDistribucion);
         for(var i=0; i<this.puntosVenta.length;i++){
             this.nodo.id= this.puntosVenta[i].N;
+            this.nodo.type= this.puntosVenta[i].type;            
             this.nodo.label= this.puntosVenta[i].N;
             this.nodo.x= this.puntosVenta[i].x;
             this.nodo.y= this.puntosVenta[i].y;
             this.nodos.push(this.nodo);
             this.nodo={id:'', label:'', x:'', y:''};
         }
+        console.log("nodos1:",this.nodos);
 
         for(var j=0; j<this.centrosDistribucion.length; j++){
             this.nodo.id= this.centrosDistribucion[j].N;
+            this.nodo.type= this.centrosDistribucion[j].type;
             this.nodo.label= this.centrosDistribucion[j].N;
             this.nodo.x= this.centrosDistribucion[j].x;
             this.nodo.y= this.centrosDistribucion[j].y;
             this.nodos.push(this.nodo);
             this.nodo={id:'', label:'', x:'', y:''};
         }
+        console.log("nodos2:",this.nodos);
+        console.log("centros:",this.centrosDistribucion);
+        console.log("puntos:",this.puntosVenta);
+        //console.log(this.distanciaPuntoAPunto());
+        //console.log("distancia:",this.distanciaCentro_Puntov()); 
     },
 
     methods:{
@@ -261,6 +272,7 @@ export default {
                 this.camiones.push(camion);
                 camion={id:'', centroDist:'', puntoVenta:[],cantdisponible:1000};
             }
+            this.distanciaCentro_Puntov();
             this.homeControl1();
         },
 
@@ -320,8 +332,15 @@ export default {
         },
 
 
-        distanciaPuntoAPunto(puntoA, puntoB){
-            return parseFloat(Math.sqrt(Math.pow(puntoB.x-puntoA.x,2)+ Math.pow(puntoB.y-puntoA.y,2)));
+        distanciaPuntoAPunto(puntoA,puntoB){
+            console.log("puntoA",puntoA);
+            console.log("puntoB",puntoB);
+            var x = puntoB.x-puntoA.x;
+            var y = puntoB.y-puntoA.y;
+            console.log("x,y:",x,y);
+            var resultado = parseFloat(Math.sqrt(Math.pow(x,2)+ Math.pow(y,2)));
+            console.log("resultado",resultado);
+            return resultado;
         },
 
         generarAristas(){
@@ -341,43 +360,45 @@ export default {
             }
         },
 
-        distanciaCentro_Puntov(camion){
-            distancias=[];
-            for(var i=0;i<camion.length;i++){
-                for(var j=0;j<camion[i].puntoVenta.length;j++){
-                    array=[];
-                    for(var k=0;k<camion[i].centroDist.length;k++){
-                        distancia= this.distanciaPuntoAPunto(camion[i].puntoVenta[j],camion[i].centroDist[k]);
-                        array.push(distancia);
+        distanciaCentro_Puntov(){
+            var distancias=[];
+            console.log("punto",this.puntosVenta);
+            console.log("centro",this.centrosDistribucion);
+            for(let j=0;j<this.puntosVenta.length;j++){
+                    var array=[];
+                    for(let k = 0 ; k<this.centrosDistribucion.length;k++){
+                        console.log("centro:",this.centrosDistribucion[k]);
+                        console.log("punto:",this.puntosVenta[j]);
+                        var distancia= this.distanciaPuntoAPunto(this.centrosDistribucion[k],this.puntosVenta[j]);
+                        console.log("distancia",distancia);
+                        array.push(this.puntosVenta[j],this.centrosDistribucion[k],distancia);
+                        console.log("array1",array);                        
                     }
                     distancias.push(array);
+                    console.log("distancias:",distancias);
+            }
+            var rutas_cortas=[];
+            // var d1 = new Array();
+            // d1 = distancias[0]
+            // var d2 = new Array();
+            // d2 = distancias[1]
+            // console.log("d1",d1, "d2",d2);
+            var myJSON = JSON.stringify(distancias);
+            console.log(myJSON);
+            for(let dist = 0 ; dist<distancias.length; dist++){  
+                console.log("distancias[dist]",distancias[dist]);              
+                var min =Math.min(distancias[dist][2],distancias[dist][5]);
+                console.log("min:" ,min);
+                if(distancias[dist][2] == min){
+                    rutas_cortas.push([distancias[dist][0],distancias[dist][1],distancias[dist][2]]);
+                }else{
+                    if(distancias[dist][5] == min){
+                        rutas_cortas.push([distancias[dist][3],distancias[dist][4],distancias[dist][5]]);
+                    }
                 }
             }
-            rutas_cortas=[];
-            contador=0;
-            //uwu
-        },
-        generarRuta(camion){
-            var estacinamiento = {x:0, y:0};
-            var distanciaCentro_PuntoVenta = 0;
-            var distanciaEstacinamiento_Centro = 0;
-            var distanciaPuntoVenta_PuntoVenta = 0;
-            var distanciaPuntoVenta_Estacionamiento = 0;
-            distanciaEstacinamiento_Centro = this.distanciaPuntoAPunto(estacionamiento, camion.centroDist);
-            for(var i=0; i<camion.length; i++){
-                for(var j=0; j<camion[i].puntoVenta.length; j++){
-                    if(camion[i].puntoVenta[0]){
-                        distanciaCentro_PuntoVenta = this.distanciaPuntoAPunto(camion.centroDist, camion[i].puntosVenta[0]);
-                    }
-
-                    distanciaPuntoVenta_PuntoVenta = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].puntoVenta[j+1]);
-
-                    if(camion[i].puntoVenta[j-1]){
-                        distanciaPuntoVenta_Estacionamiento = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], estacionamiento);
-                    }
-    
-                }
-            }
+            console.log("rutas_cortas:",rutas_cortas); 
+            return rutas_cortas;          
         },
         
     },

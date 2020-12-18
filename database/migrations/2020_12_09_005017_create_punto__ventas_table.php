@@ -15,6 +15,7 @@ class CreatePuntoVentasTable extends Migration
     {
         Schema::create('punto__ventas', function (Blueprint $table) {
             $table->id();
+            $table->string('type');
             $table->bigInteger('N');
             $table->bigInteger('x');
             $table->bigInteger('y');

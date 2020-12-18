@@ -82,24 +82,28 @@ class leerArchivo extends Controller
             if($row[0]=="P" || $row[0]=="p"){
                 try{
                     $savedata= new punto_Venta();
+                    $savedata->type= 'P';
                     $savedata->N= intval($row[1]);
                     $coordenadas= preg_split("/,/",$row[2]);
                     $savedata->x= intval($coordenadas[0]);
                     $savedata->y = intval($coordenadas[1]);
                     $savedata->save();
                 }catch(\Illuminate\Database\QueryException $ex){
+                    Log::error("Error:".$ex->getMessage());
                     return 'Error: ' . $ex->getMessage();
                 }
             }
             else{
                 try{
                     $savedata= new centro_distribucion();
+                    $savedata->type= 'C';
                     $savedata->N= intval($row[1]);
                     $coordenadas= preg_split("/,/",$row[2]);
                     $savedata->x= intval($coordenadas[0]);
                     $savedata->y= intval($coordenadas[1]);
                     $savedata->save();
                 }catch(\Illuminate\Database\QueryException $ex){
+                    Log::error("Error:".$ex->getMessage());
                     return 'Error: '. $ex->getMessage();
                 }
             }
