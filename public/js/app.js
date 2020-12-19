@@ -2048,21 +2048,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2370,7 +2355,7 @@ __webpack_require__.r(__webpack_exports__);
       this.centrosPuntos = cercanos;
       console.log("F", this.fabricaCentros);
       console.log("C", this.centrosPuntos);
-      this.enviarLog("Método distanciaCentro_Puntov finalizado");
+      this.enviarLog("Método distancia Centro_Puntov finalizado");
     },
     asignarPunto: function asignarPunto() {
       this.enviarLog("Método asignarPunto iniciado");
@@ -2413,7 +2398,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     hojaDeRuta: function hojaDeRuta() {
       this.camiones.forEach(function (element) {
-        console.log("camiones", element);
+        console.log("camiones", element); // tabla camiones: id_camion,centro_dist, relacionado a muchos puntos de venta. 
       });
     },
     //LOG
@@ -94362,7 +94347,16 @@ var render = function() {
                         )
                       ]),
                       _vm._v(" "),
-                      _vm._m(9, true)
+                      _c("div", { staticClass: "text-center" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-lg btn-success",
+                            on: { click: _vm.homeControl3 }
+                          },
+                          [_vm._v("Generar Hoja de rutas")]
+                        )
+                      ])
                     ])
                   ]
                 )
@@ -94375,60 +94369,28 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _vm.option3 == true
-        ? _c("div", { staticClass: "col-6" }, [
+        ? _c("div", { staticClass: "col-12" }, [
             _c("h4", { staticClass: "fredoka textocolor" }, [
-              _vm._v("Centros de Distribución")
+              _vm._v("Hoja de ruta")
             ]),
             _vm._v(" "),
             _c(
               "table",
               { staticClass: "table table-bordered cardaux textocolor" },
               [
-                _vm._m(10),
+                _vm._m(9),
                 _vm._v(" "),
                 _c(
                   "tbody",
-                  _vm._l(_vm.centrosDistribucion, function(item, index) {
+                  _vm._l(_vm.camiones, function(item, index) {
                     return _c("tr", { key: index }, [
                       _c("th", { attrs: { scope: "row" } }, [
-                        _vm._v(_vm._s(item.N))
+                        _vm._v(_vm._s(item.id))
                       ]),
                       _vm._v(" "),
-                      _c("td", [
-                        _vm._v(
-                          "X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y)
-                        )
-                      ])
-                    ])
-                  }),
-                  0
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _c("h4", { staticClass: "fredoka textocolor" }, [
-              _vm._v("Puntos de Venta")
-            ]),
-            _vm._v(" "),
-            _c(
-              "table",
-              { staticClass: "table table-bordered cardaux textocolor" },
-              [
-                _vm._m(11),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.puntosVenta, function(item, index) {
-                    return _c("tr", { key: index }, [
-                      _c("th", { attrs: { scope: "row" } }, [
-                        _vm._v(_vm._s(item.N))
-                      ]),
+                      _c("td", [_vm._v(_vm._s(item.centroDist))]),
                       _vm._v(" "),
-                      _c("td", [
-                        _vm._v(
-                          "X: " + _vm._s(item.x) + "; Y: " + _vm._s(item.y)
-                        )
-                      ])
+                      _c("td", [_vm._v(_vm._s(item.puntoVenta))])
                     ])
                   }),
                   0
@@ -94546,33 +94508,15 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "text-center" }, [
-      _c("button", { staticClass: "btn btn-lg btn-success" }, [
-        _vm._v("Generar Hoja de rutas")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("thead", { staticClass: "thead-dark" }, [
       _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("N")]),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Camión")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Coordenadas")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", { staticClass: "thead-dark" }, [
-      _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("N")]),
+        _c("th", { attrs: { scope: "col" } }, [
+          _vm._v("Centro de distribución")
+        ]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Coordenadas")])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Puntos de venta")])
       ])
     ])
   }

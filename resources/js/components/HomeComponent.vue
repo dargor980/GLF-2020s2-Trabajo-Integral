@@ -100,7 +100,7 @@
                         </div> 
 
                         <div class="text-center">
-                            <button class="btn btn-lg btn-success" >Generar Hoja de rutas</button>
+                            <button class="btn btn-lg btn-success" @click="homeControl3" >Generar Hoja de rutas</button>
                         </div>  
                     </div>
                 </div> 
@@ -110,39 +110,24 @@
 
 
         <div class="row">
-            <div class="col-6" v-if="option3==true">
-                <h4 class="fredoka textocolor">Centros de Distribución</h4>
+            <div class="col-12" v-if="option3==true">
+                <h4 class="fredoka textocolor">Hoja de ruta</h4>
                 <table class="table table-bordered cardaux textocolor">
                     <thead class="thead-dark">
                         <tr>
-                        <th scope="col">N</th>
-                        <th scope="col">Coordenadas</th>
+                        <th scope="col">Camión</th>
+                        <th scope="col">Centro de distribución</th>
+                        <th scope="col">Puntos de venta</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        
-                        <tr v-for="(item, index) in centrosDistribucion" :key="index">
-                            <th scope="row">{{item.N}}</th>
-                            <td>X: {{item.x}}; Y: {{item.y}}</td>
-                        </tr>
-                        
-                    </tbody>
-                </table>
-                <h4 class="fredoka textocolor">Puntos de Venta</h4>
-                <table class="table table-bordered cardaux textocolor">
-                    <thead class="thead-dark">
-                        <tr>
-                        <th scope="col">N</th>
-                        <th scope="col">Coordenadas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                        <tr v-for="(item, index) in puntosVenta" :key="index">
-                            <th scope="row">{{item.N}}</th>
-                            <td>X: {{item.x}}; Y: {{item.y}}</td>
-                        </tr>
-                        
+                    <tbody> 
+                        <!--Pendiente de revisión   -->
+                        <tr v-for="(item, index) in camiones" :key="index">
+                            <th scope="row">{{item.id}}</th>
+                            <td>{{item.centroDist}}</td>
+                            <td>{{item.puntoVenta}}</td> 
+
+                        </tr>                       
                     </tbody>
                 </table>
                 
@@ -390,7 +375,7 @@ export default {
             this.centrosPuntos = cercanos;
             console.log("F",this.fabricaCentros);
             console.log("C",this.centrosPuntos);
-            this.enviarLog("Método distanciaCentro_Puntov finalizado");                  
+            this.enviarLog("Método distancia Centro_Puntov finalizado");                  
         },
         asignarPunto(){
             this.enviarLog("Método asignarPunto iniciado");
@@ -417,6 +402,8 @@ export default {
         hojaDeRuta(){
             this.camiones.forEach(element => {
                 console.log("camiones",element);
+               // tabla camiones: id_camion,centro_dist, relacionado a muchos puntos de venta. 
+
             });
         },
         //LOG
