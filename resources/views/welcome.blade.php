@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="{{asset('css/app.css')}}">   
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
     <script src="{{asset('js/app.js')}}" defer></script>
+    <!--CHART JS-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <title>Trabajo Integral</title>
 </head>
 <body id="particles-js" style="background-color:#3b4044;">

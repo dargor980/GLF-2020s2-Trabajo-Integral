@@ -25,8 +25,14 @@ Route::get('/puntosventa',[getDataController::class, 'getPuntosVenta']);
 
 Route::get('/centrosdistribucion', [getDataController::class, 'getCentrosDistribucion']);
 
+Route::get('/addlog', [getDataController::class, 'addLogs']);
+
 Route::get('/log', function() {
     return view('log');
+});
+
+Route::get('/diag', function() {
+    return view('diag');
 });
 Route::get('/clearlog', function() {
     file_put_contents(base_path().'/storage/logs/laravel.log', " ");

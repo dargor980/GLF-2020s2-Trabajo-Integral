@@ -2063,12 +2063,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2082,6 +2076,7 @@ __webpack_require__.r(__webpack_exports__);
       camiones: [],
       fabricaCentros: [],
       centrosPuntos: [],
+      //{p,c,d}
       nodos: [{
         id: 'estacionamiento',
         label: 'estacionamiento'
@@ -2154,12 +2149,7 @@ __webpack_require__.r(__webpack_exports__);
         x: '',
         y: ''
       };
-    } //console.log("nodos2:",this.nodos);
-    //console.log("centros:",this.centrosDistribucion);
-    //console.log("puntos:",this.puntosVenta);
-    //console.log(this.distanciaPuntoAPunto());
-    //console.log("distancia:",this.distanciaCentro_Puntov()); 
-
+    }
   },
   methods: {
     homeControl1: function homeControl1() {
@@ -2217,6 +2207,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.distanciaCentro_Puntov();
+      this.asignarPunto();
+      this.hojaDeRuta();
       this.homeControl1();
     },
     asignarDistribuidor: function asignarDistribuidor(id) {
@@ -2281,13 +2273,9 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     distanciaPuntoAPunto: function distanciaPuntoAPunto(puntoA, puntoB) {
-      //console.log("puntoA",puntoA);
-      //console.log("puntoB",puntoB);
       var x = puntoB.x - puntoA.x;
-      var y = puntoB.y - puntoA.y; //console.log("x,y:",x,y);
-
-      var resultado = parseFloat(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))); //console.log("resultado",resultado);
-
+      var y = puntoB.y - puntoA.y;
+      var resultado = parseFloat(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
       return resultado;
     },
     generarAristas: function generarAristas() {
@@ -2307,22 +2295,20 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     distanciaCentro_Puntov: function distanciaCentro_Puntov() {
+      this.enviarLog("Iniciando método distanciaCentro_Puntov");
       var distancias = [];
-      var distanciasC = []; //console.log("punto",this.puntosVenta);
-      //console.log("centro",this.centrosDistribucion);
+      var distanciasC = [];
+      var rutas_cortas = [];
 
       for (var j = 0; j < this.puntosVenta.length; j++) {
         var array = [];
 
         for (var k = 0; k < this.centrosDistribucion.length; k++) {
-          //console.log("centro:",this.centrosDistribucion[k]);
-          //console.log("punto:",this.puntosVenta[j]);
-          var distancia = this.distanciaPuntoAPunto(this.centrosDistribucion[k], this.puntosVenta[j]); //console.log("distancia",distancia);
-
-          array.push(this.puntosVenta[j], this.centrosDistribucion[k], distancia); //console.log("array1",array);                        
+          var distancia = this.distanciaPuntoAPunto(this.centrosDistribucion[k], this.puntosVenta[j]);
+          array.push(this.puntosVenta[j], this.centrosDistribucion[k], distancia);
         }
 
-        distancias.push(array); //console.log("distancias:",distancias);
+        distancias.push(array);
       }
 
       for (var cen = 0; cen < this.centrosDistribucion.length; cen++) {
@@ -2336,7 +2322,8 @@ __webpack_require__.r(__webpack_exports__);
           distancia: ''
         };
         var distanciaC = this.distanciaPuntoAPunto(arr, this.centrosDistribucion[cen]);
-        otro.centro = this.centrosDistribucion[cen].type + this.centrosDistribucion[cen].N;
+        otro.centro = this.centrosDistribucion[cen].N; //this.centrosDistribucion[cen].type + 
+
         otro.fabrica = arr.x + ',' + arr.y;
         otro.distancia = distanciaC;
         distanciasC.push(otro);
@@ -2347,17 +2334,8 @@ __webpack_require__.r(__webpack_exports__);
         };
       }
 
-      var rutas_cortas = []; // var d1 = new Array();
-      // d1 = distancias[0]
-      // var d2 = new Array();
-      // d2 = distancias[1]
-      // console.log("d1",d1, "d2",d2);
-      //var myJSON = JSON.stringify(distancias);
-      //console.log(myJSON);
-
       for (var dist = 0; dist < distancias.length; dist++) {
-        //console.log("distancias[dist]",distancias[dist]);              
-        var min = Math.min(distancias[dist][2], distancias[dist][5]); //console.log("min:" ,min);
+        var min = Math.min(distancias[dist][2], distancias[dist][5]);
 
         if (distancias[dist][2] == min) {
           rutas_cortas.push([distancias[dist][0], distancias[dist][1], distancias[dist][2]]);
@@ -2376,8 +2354,10 @@ __webpack_require__.r(__webpack_exports__);
       };
       var cercanos = [];
       rutas_cortas.forEach(function (element) {
-        data2.punto = element[0].type + element[0].N;
-        data2.centro = element[1].type + element[1].N;
+        data2.punto = element[0].N; //element[0].type + 
+
+        data2.centro = element[1].N; //element[1].type
+
         data2.distancia = element[2];
         cercanos.push(data2);
         data2 = {
@@ -2386,11 +2366,65 @@ __webpack_require__.r(__webpack_exports__);
           distancia: ''
         };
       });
-      console.log("distanciasC", distanciasC);
-      console.log("cercanos", cercanos); //this.fabricaCentros = distanciasC;
-      //this.centrosPuntos = cercanos;
+      this.fabricaCentros = distanciasC;
+      this.centrosPuntos = cercanos;
+      console.log("F", this.fabricaCentros);
+      console.log("C", this.centrosPuntos);
+      this.enviarLog("Método distanciaCentro_Puntov finalizado");
+    },
+    asignarPunto: function asignarPunto() {
+      this.enviarLog("Método asignarPunto iniciado");
+      var centros = [];
+      var point = {
+        punto: '',
+        distancia: ''
+      };
+      var center = {
+        centro: '',
+        punto: ''
+      };
 
-      return cercanos;
+      for (var cen = 0; cen < this.centrosPuntos.length; cen++) {
+        point.punto = this.centrosPuntos[cen].punto;
+        point.distancia = this.centrosPuntos[cen].distancia;
+        center.centro = this.centrosPuntos[cen].centro;
+        center.punto = point;
+        centros.push(center);
+        point = {
+          punto: '',
+          distancia: ''
+        };
+        center = {
+          centro: '',
+          punto: ''
+        };
+      }
+
+      console.log("centros", centros);
+      this.centrosPuntos = centros;
+      console.log("centrosPuntos", this.centrosPuntos); //[{centro,punto:{punto,distancia}}]
+
+      console.log("centrosDistribucion", this.centrosDistribucion); //[{n,id,type=c,x,y}]
+
+      console.log("puntosVenta", this.puntosVenta); //[{n,id,type=P,x,y}]
+
+      this.enviarLog("Método asignarPunto finalizado");
+      return centros;
+    },
+    hojaDeRuta: function hojaDeRuta() {
+      this.camiones.forEach(function (element) {
+        console.log("camiones", element);
+      });
+    },
+    //LOG
+    enviarLog: function enviarLog(str) {
+      axios.get("addlog", {
+        params: {
+          messagge: str
+        }
+      }).then(function (resp) {
+        console.log("log add");
+      });
     }
   }
 });
@@ -94340,8 +94374,6 @@ var render = function() {
       : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _vm.option3 == true ? _c("div", { staticClass: "col-6" }) : _vm._e(),
-      _vm._v(" "),
       _vm.option3 == true
         ? _c("div", { staticClass: "col-6" }, [
             _c("h4", { staticClass: "fredoka textocolor" }, [
@@ -94404,10 +94436,6 @@ var render = function() {
               ]
             )
           ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.option3 == true
-        ? _c("div", { staticClass: "container cardaux" })
         : _vm._e()
     ])
   ])
@@ -107131,14 +107159,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!***************************************************!*\
   !*** ./resources/js/components/HomeComponent.vue ***!
   \***************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _HomeComponent_vue_vue_type_template_id_782dcf83___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./HomeComponent.vue?vue&type=template&id=782dcf83& */ "./resources/js/components/HomeComponent.vue?vue&type=template&id=782dcf83&");
 /* harmony import */ var _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./HomeComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/HomeComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -107168,7 +107197,7 @@ component.options.__file = "resources/js/components/HomeComponent.vue"
 /*!****************************************************************************!*\
   !*** ./resources/js/components/HomeComponent.vue?vue&type=script&lang=js& ***!
   \****************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

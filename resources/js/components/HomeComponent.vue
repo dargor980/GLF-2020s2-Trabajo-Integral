@@ -18,7 +18,6 @@
                 </form>     
             </div>
         </div>
-
         <!--LISTADO DE CAMIONES-->
         <h3 class="fredoka textocolor" v-if="option2==true">Listado de Camiones</h3>
         <div class="row accordion cardaux" id="automatas" v-if="option2==true">
@@ -63,8 +62,9 @@
                                     <label class="input-group-text">Seleccione punto de venta</label>
                                 </div>
                                 <select class="custom-select" v-model="valor2">
-                                    <option selected :value="0">Selecciona...</option>  
-                                    <option v-for="(item,index) in puntosVenta" :key="index" :value="item.N">Punto Venta {{item.N}}</option>
+                                    <option selected :value="0">Selecciona...</option>
+
+                                    <option  v-for="(item,index) in puntosVenta" :key="index" :value="item.N">Punto Venta {{item.N}}</option>
                                 </select>
                             </div>
 
@@ -111,9 +111,6 @@
 
         <div class="row">
             <div class="col-6" v-if="option3==true">
-                
-            </div> 
-            <div class="col-6" v-if="option3==true">
                 <h4 class="fredoka textocolor">Centros de Distribución</h4>
                 <table class="table table-bordered cardaux textocolor">
                     <thead class="thead-dark">
@@ -150,9 +147,6 @@
                 </table>
                 
             </div>
-            <div v-if="option3==true" class="container cardaux">
-                
-            </div>
         </div>  
               
     </div>
@@ -160,6 +154,7 @@
 </template>
 
 <script>
+
 export default {
     data(){
         return{
@@ -173,14 +168,12 @@ export default {
             camiones:[],
 
             fabricaCentros:[],
-            centrosPuntos:[],
+            centrosPuntos:[], //{p,c,d}
             
             nodos:[{id:'estacionamiento',label:'estacionamiento'}],
             nodo:{id:'', label:'', x:'', y:''},
             aristas:[],
             arista:{from:'', label:'', to:'', color: {color:'rgb(0,0,0)'}},
-            
-
             //Variables control de vistas
             option1:true,
             option2:false,
@@ -223,11 +216,6 @@ export default {
             this.nodos.push(this.nodo);
             this.nodo={id:'', label:'', x:'', y:''};
         }
-        //console.log("nodos2:",this.nodos);
-        //console.log("centros:",this.centrosDistribucion);
-        //console.log("puntos:",this.puntosVenta);
-        //console.log(this.distanciaPuntoAPunto());
-        //console.log("distancia:",this.distanciaCentro_Puntov()); 
     },
 
     methods:{
@@ -251,13 +239,11 @@ export default {
             this.form3=false;
             this.dist=false;
         },
-
         formControl1(){
             this.form1=false;
             this.form2=true;
             this.dist=true;
         },
-
         formControl2(){
             this.form1=false;
             this.form2=false;
@@ -277,9 +263,10 @@ export default {
                 camion={id:'', centroDist:'', puntoVenta:[],cantdisponible:1000};
             }
             this.distanciaCentro_Puntov();
+            this.asignarPunto();
+            this.hojaDeRuta();
             this.homeControl1();
         },
-
         asignarDistribuidor(id){
             if(this.valor==0 || this.valor==''){
                 swal("Seleccione un centro de distribución antes de continuar.",{
@@ -297,7 +284,6 @@ export default {
             }
             this.formControl1();
         },
-
         asignarPuntoVenta(id){
             if(this.valor2==0 || this.valor2=='' || this.cantidad=='' || this.cantidad==0){
                 swal("Rellene los campos antes de continuar",{
@@ -308,6 +294,7 @@ export default {
                 return;
             }
             let pVenta={id:'',cant:''};
+            
             for(var i=0; i<this.camiones.length; i++){
                 if(this.camiones[i].id==id){
                     if(this.camiones[i].cantdisponible>=this.cantidad){
@@ -334,18 +321,12 @@ export default {
                 }
             }   
         },
-
-        distanciaPuntoAPunto(puntoA,puntoB){
-            //console.log("puntoA",puntoA);
-            //console.log("puntoB",puntoB);
+        distanciaPuntoAPunto(puntoA,puntoB){           
             var x = puntoB.x-puntoA.x;
             var y = puntoB.y-puntoA.y;
-            //console.log("x,y:",x,y);
             var resultado = parseFloat(Math.sqrt(Math.pow(x,2)+ Math.pow(y,2)));
-            //console.log("resultado",resultado);
             return resultado;
         },
-
         generarAristas(){
             for(var i=0; i<this.nodos.length;i++){
                 for(var j=0; j<this.nodos.length;j++){
@@ -362,47 +343,31 @@ export default {
                 }
             }
         },
-
         distanciaCentro_Puntov(){
+            this.enviarLog("Iniciando método distanciaCentro_Puntov");
             var distancias = [];
-            var distanciasC = []
-            //console.log("punto",this.puntosVenta);
-            //console.log("centro",this.centrosDistribucion);
+            var distanciasC = [];
+            var rutas_cortas=[];
             for(let j = 0 ; j < this.puntosVenta.length ; j++){
                     var array = [];
                     for(let k = 0 ; k < this.centrosDistribucion.length ; k++){
-                        //console.log("centro:",this.centrosDistribucion[k]);
-                        //console.log("punto:",this.puntosVenta[j]);
                         var distancia = this.distanciaPuntoAPunto(this.centrosDistribucion[k],this.puntosVenta[j]);
-                        //console.log("distancia",distancia);
-                        array.push(this.puntosVenta[j],this.centrosDistribucion[k],distancia);
-                        //console.log("array1",array);                        
+                        array.push(this.puntosVenta[j],this.centrosDistribucion[k],distancia);                     
                     }
                     distancias.push(array);
-                    //console.log("distancias:",distancias);
             }
             for(let cen = 0; cen < this.centrosDistribucion.length ; cen++){
                 var arr = {x:0,y:0}
                 var otro = {centro:'', fabrica:'',distancia:''}
                 var distanciaC = this.distanciaPuntoAPunto(arr,this.centrosDistribucion[cen]);
-                otro.centro = this.centrosDistribucion[cen].type + this.centrosDistribucion[cen].N;
+                otro.centro = this.centrosDistribucion[cen].N; //this.centrosDistribucion[cen].type + 
                 otro.fabrica = arr.x + ','+ arr.y;
                 otro.distancia = distanciaC
                 distanciasC.push(otro);
                 otro = {centro:'', fabrica:'',distancia:''}
-            }
-            var rutas_cortas=[];
-            // var d1 = new Array();
-            // d1 = distancias[0]
-            // var d2 = new Array();
-            // d2 = distancias[1]
-            // console.log("d1",d1, "d2",d2);
-            //var myJSON = JSON.stringify(distancias);
-            //console.log(myJSON);
-            for(let dist = 0 ; dist<distancias.length; dist++){  
-                //console.log("distancias[dist]",distancias[dist]);              
-                var min =Math.min(distancias[dist][2],distancias[dist][5]);
-                //console.log("min:" ,min);
+            }           
+            for(let dist = 0 ; dist<distancias.length; dist++){           
+                var min =Math.min(distancias[dist][2],distancias[dist][5]);               
                 if(distancias[dist][2] == min){
                     rutas_cortas.push([distancias[dist][0],distancias[dist][1],distancias[dist][2]]);
                 }else{
@@ -415,19 +380,51 @@ export default {
             var data2 = {punto:'',centro:'',distancia:''}
             var cercanos = [];
             rutas_cortas.forEach(element => {
-                data2.punto = element[0].type + element[0].N;
-                data2.centro = element[1].type + element[1].N;
+                data2.punto = element[0].N;//element[0].type + 
+                data2.centro = element[1].N; //element[1].type
                 data2.distancia = element[2];
                 cercanos.push(data2);
                 data2 = {punto:'',centro:'',distancia:''}
             });
-            console.log("distanciasC",distanciasC);
-            console.log("cercanos",cercanos);
-            //this.fabricaCentros = distanciasC;
-            //this.centrosPuntos = cercanos;
-            return cercanos;
-                     
-        }, 
+            this.fabricaCentros = distanciasC;
+            this.centrosPuntos = cercanos;
+            console.log("F",this.fabricaCentros);
+            console.log("C",this.centrosPuntos);
+            this.enviarLog("Método distanciaCentro_Puntov finalizado");                  
+        },
+        asignarPunto(){
+            this.enviarLog("Método asignarPunto iniciado");
+            var centros = [];
+            var point = {punto:'',distancia:''}
+            var center = {centro:'',punto:''}
+            for(let cen = 0 ; cen<this.centrosPuntos.length; cen++){
+                point.punto = this.centrosPuntos[cen].punto;
+                point.distancia = this.centrosPuntos[cen].distancia;
+                center.centro = this.centrosPuntos[cen].centro
+                center.punto = point;
+                centros.push(center);
+                point = {punto:'',distancia:''}
+                center = {centro:'',punto:''}
+            }                       
+            console.log("centros",centros);
+            this.centrosPuntos = centros;
+            console.log("centrosPuntos",this.centrosPuntos);//[{centro,punto:{punto,distancia}}]
+            console.log("centrosDistribucion",this.centrosDistribucion);//[{n,id,type=c,x,y}]
+            console.log("puntosVenta", this.puntosVenta);//[{n,id,type=P,x,y}]
+            this.enviarLog("Método asignarPunto finalizado");
+            return centros;
+        },
+        hojaDeRuta(){
+            this.camiones.forEach(element => {
+                console.log("camiones",element);
+            });
+        },
+        //LOG
+        enviarLog(str){
+            axios.get("addlog",{params: {messagge: str}}).then(resp =>{
+                console.log("log add");
+            });
+        }
     },
 }
 </script>
