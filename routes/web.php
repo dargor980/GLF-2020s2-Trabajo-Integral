@@ -27,6 +27,8 @@ Route::get('/centrosdistribucion', [getDataController::class, 'getCentrosDistrib
 
 Route::get('/addlog', [getDataController::class, 'addLogs']);
 
+// Route::get('/ordenar', [getDataController::class, 'ordenar']);
+
 Route::get('/log', function() {
     return view('log');
 });

@@ -2048,6 +2048,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2062,6 +2072,8 @@ __webpack_require__.r(__webpack_exports__);
       fabricaCentros: [],
       centrosPuntos: [],
       //{p,c,d}
+      puntosCercanos: [],
+      //lista de puntos entre puntos
       nodos: [{
         id: 'estacionamiento',
         label: 'estacionamiento'
@@ -2140,8 +2152,8 @@ __webpack_require__.r(__webpack_exports__);
     homeControl1: function homeControl1() {
       this.option1 = false;
       this.option2 = true;
-      this.option3 = false;
-      console.log("Camiones:", this.camiones);
+      this.option3 = false; //console.log("Camiones:", this.camiones);
+
       return;
     },
     homeControl2: function homeControl2() {
@@ -2329,33 +2341,143 @@ __webpack_require__.r(__webpack_exports__);
             rutas_cortas.push([distancias[dist][3], distancias[dist][4], distancias[dist][5]]);
           }
         }
-      } //console.log("rutas_cortas:",rutas_cortas); 
+      }
 
-
+      console.log("rutas_cortas:", rutas_cortas);
       var data2 = {
         punto: '',
-        centro: '',
-        distancia: ''
+        distancia: '',
+        estado: false
       };
       var cercanos = [];
-      rutas_cortas.forEach(function (element) {
-        data2.punto = element[0].N; //element[0].type + 
+      var auxCentros = [];
+      var data3 = {
+        centro: '',
+        puntos: []
+      };
 
-        data2.centro = element[1].N; //element[1].type
+      for (var a = 0; a < this.centrosDistribucion.length; a++) {
+        data3.centro = this.centrosDistribucion[a].N;
+        auxCentros.push(data3); //
+
+        data3 = {
+          centro: '',
+          puntos: []
+        };
+      }
+
+      rutas_cortas.forEach(function (element) {
+        data2.punto = element[0].N; //element[0].type +
 
         data2.distancia = element[2];
+
+        for (var b = 0; b < auxCentros.length; b++) {
+          if (element[1].N == auxCentros[b].centro) {
+            auxCentros[b].puntos.push(data2);
+          }
+        }
+
         cercanos.push(data2);
         data2 = {
           punto: '',
-          centro: '',
-          distancia: ''
+          distancia: '',
+          estado: false
         };
       });
+      console.log("auxCentros", auxCentros);
       this.fabricaCentros = distanciasC;
-      this.centrosPuntos = cercanos;
-      console.log("F", this.fabricaCentros);
+      this.centrosPuntos = auxCentros;
       console.log("C", this.centrosPuntos);
+      console.log("F", this.fabricaCentros);
+      this.distanciaEntrePuntos(this.centrosPuntos);
       this.enviarLog("Método distancia Centro_Puntov finalizado");
+    },
+    distanciaEntrePuntos: function distanciaEntrePuntos() {
+      //centrosPuntos = [{1,[{1,dist,estado},{3,dist,estado},{4,dist,estado}]},{2,[]}]
+      //ArrayCercanos = [{1,[{4,dist},{3,dist}]},{2,[]},{3,[{4,dist},{1,dist}]},{4,[{1,dist},{3,dist}]}]
+      var arrayCercanos = [];
+      var listaPuntos = {
+        punto: '',
+        cerca: []
+      };
+      var puntoCerca = {
+        punto: '',
+        distancia: ''
+      };
+
+      for (var a = 0; a < this.centrosPuntos.length; a++) {
+        console.log("centrosPuntos[a][1]", this.centrosPuntos[a].puntos.length);
+
+        for (var b = 0; b < this.centrosPuntos[a].puntos.length; b++) {
+          listaPuntos.punto = this.centrosPuntos[a].puntos[b].punto;
+
+          for (var c = 0; c < this.centrosPuntos[a].puntos.length; c++) {
+            if (b != c) {
+              var arr1 = {
+                x: '',
+                y: ''
+              };
+              var arr2 = {
+                x: '',
+                y: ''
+              };
+              console.log("ptos", this.puntosVenta);
+
+              for (var d = 0; d < this.puntosVenta.length; d++) {
+                if (this.centrosPuntos[a].puntos[b].punto == this.puntosVenta[d].N) {
+                  arr1.x = this.puntosVenta[d].x;
+                  arr1.y = this.puntosVenta[d].y;
+                }
+
+                if (this.centrosPuntos[a].puntos[c].punto == this.puntosVenta[d].N) {
+                  arr2.x = this.puntosVenta[d].x;
+                  arr2.y = this.puntosVenta[d].y;
+                }
+              }
+
+              console.log("arrays", arr1, arr2);
+              var dist = this.distanciaPuntoAPunto(arr1, arr2);
+              console.log("dist", dist);
+              puntoCerca.punto = this.centrosPuntos[a].puntos[c].punto;
+              puntoCerca.distancia = dist;
+              listaPuntos.cerca.push(puntoCerca);
+              puntoCerca = {
+                punto: '',
+                distancia: ''
+              };
+            }
+          }
+
+          arrayCercanos.push(listaPuntos);
+          listaPuntos = {
+            punto: '',
+            cerca: []
+          };
+        }
+      }
+
+      console.log("CERCA X PUNTO", arrayCercanos);
+      var myJSON = JSON.stringify(arrayCercanos);
+      console.log(myJSON);
+      this.puntosCercanos = this.ordenarPuntos(arrayCercanos);
+      console.log("puntosCercanos", this.puntosCercanos);
+    },
+    ordenarPuntos: function ordenarPuntos(arrayCercanos) {
+      //ArrayCercanos = [{1,[{4,dist},{3,dist}]},{2,[]},{3,[{4,dist},{1,dist}]},{4,[{1,dist},{3,dist}]}]
+      //var arrayCercanos = [];
+      //var listaPuntos = {punto: '', cerca: []}
+      //var puntoCerca = {punto: '', distancia: ''}
+      for (var a = 0; a < arrayCercanos.length; a++) {
+        for (var b = 0; b < arrayCercanos[a].cerca.length; b++) {
+          arrayCercanos[a].cerca.sort(function (a, b) {
+            return a.distancia > b.distancia ? 1 : -1;
+          }); // E + c +  p1 + p3 + E                           
+        }
+      }
+
+      var myJSON = JSON.stringify(arrayCercanos);
+      console.log(myJSON);
+      return arrayCercanos;
     },
     asignarPunto: function asignarPunto() {
       this.enviarLog("Método asignarPunto iniciado");
@@ -94259,7 +94381,7 @@ var render = function() {
                                       [_vm._v("Selecciona...")]
                                     ),
                                     _vm._v(" "),
-                                    _vm._l(_vm.puntosVenta, function(
+                                    _vm._l(_vm.puntoVenta, function(
                                       item,
                                       index
                                     ) {
@@ -94271,7 +94393,9 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Punto Venta " + _vm._s(item.N)
+                                            "\n                                    \n                                    Punto Venta " +
+                                              _vm._s(item.N) +
+                                              "\n                                    \n                                "
                                           )
                                         ]
                                       )
@@ -94390,7 +94514,26 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(item.centroDist))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(item.puntoVenta))])
+                      _c(
+                        "table",
+                        { staticClass: "table table-bordered" },
+                        [
+                          _c("th", { attrs: { colspan: "3" } }, [_vm._v("#")]),
+                          _vm._v(" "),
+                          _vm._l(item.puntoVenta, function(otem, ondex) {
+                            return _c("tr", { key: ondex }, [
+                              _c("th", [
+                                _vm._v("id: " + _vm._s(otem.id) + " ")
+                              ]),
+                              _vm._v(" "),
+                              _c("th", [
+                                _vm._v("Cantidad: " + _vm._s(otem.cant))
+                              ])
+                            ])
+                          })
+                        ],
+                        2
+                      )
                     ])
                   }),
                   0
@@ -107103,15 +107246,14 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!***************************************************!*\
   !*** ./resources/js/components/HomeComponent.vue ***!
   \***************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _HomeComponent_vue_vue_type_template_id_782dcf83___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./HomeComponent.vue?vue&type=template&id=782dcf83& */ "./resources/js/components/HomeComponent.vue?vue&type=template&id=782dcf83&");
 /* harmony import */ var _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./HomeComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/HomeComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _HomeComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -107141,7 +107283,7 @@ component.options.__file = "resources/js/components/HomeComponent.vue"
 /*!****************************************************************************!*\
   !*** ./resources/js/components/HomeComponent.vue?vue&type=script&lang=js& ***!
   \****************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

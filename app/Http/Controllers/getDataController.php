@@ -23,4 +23,9 @@ class getDataController extends Controller
         $messagge = $request->input()["messagge"];
         Log::info($messagge);
     }
+    // public function ordenar(){
+    //     $data1 = punto_Venta::all();
+    //     $data2 = centro_distribucion::all();
+    //     dd($data1);
+    // }
 }
