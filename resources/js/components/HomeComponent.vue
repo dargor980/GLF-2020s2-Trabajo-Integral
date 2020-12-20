@@ -64,7 +64,7 @@
                                 <select class="custom-select" v-model="valor2">
                                     <option selected :value="0">Selecciona...</option>
                                     
-                                    <option  v-for="(item,index) in puntoVenta" :key="index" :value="item.N">
+                                    <option  v-for="(item,index) in puntosVenta" :key="index" :value="item.N">
                                         
                                         Punto Venta {{item.N}}
                                         
@@ -123,6 +123,7 @@
                         <th scope="col">Camión</th>
                         <th scope="col">Centro de distribución</th>
                         <th scope="col">Puntos de venta</th>
+                        <th scope="col">Ruta</th>
                         </tr>
                     </thead>
                     <tbody> 
@@ -130,13 +131,22 @@
                         <tr v-for="(item, index) in camiones" :key="index">
                             <th scope="row">{{item.id}}</th>
                             <td>{{item.centroDist}}</td>
-                            <table class="table table-bordered">
-                            <th colspan="3">#</th>
-                            <tr v-for="(otem, ondex) in item.puntoVenta" :key="ondex">
-                                <th>id: {{otem.id}} </th> 
-                                <th>Cantidad: {{otem.cant}}</th>
-                            </tr>
+                            <table class="table table-bordered textocolor">
+                                <th colspan="3">#</th>
+                                <tr v-for="(otem, ondex) in item.puntoVenta" :key="ondex">
+                                    <th>id: {{otem.id}} </th> 
+                                    <th>Cantidad: {{otem.cant}}</th>                                   
+                                </tr>
                             </table>
+
+                            <table class="table table-bordered textocolor">
+                                <th colspan="3">Ruta</th>
+                                <tr v-for="(dtem, dndex) in item.ruta" :key="dndex">
+                                    <th>Punto de venta: {{dtem}} </th>                                    
+                                </tr>
+                            </table>
+                            <td>Distancia totál{{item.distancia}}</td>
+
                         </tr>                       
                     </tbody>
                 </table>
@@ -157,6 +167,7 @@ export default {
             valor2:'',
             cantidad:'',
             puntosVenta:[],
+            puntosVentaEstatico:[],
             centrosDistribucion:[],
             dRestante:'',
             camionesD:'',
@@ -183,7 +194,7 @@ export default {
 
     created(){
         axios.get('puntosventa').then(response =>{
-            this.puntosVenta=response.data;[] //[p1{id,n,x,y},p2{id,n,x,y},p3{id,n,x,y}]
+            this.puntosVenta=response.data; //[p1{id,n,x,y},p2{id,n,x,y},p3{id,n,x,y}]
             //console.log("axios",this.puntosVenta);
         });
         //console.log("axios2",this.puntosVenta);
@@ -191,6 +202,7 @@ export default {
             this.centrosDistribucion=response.data; //[c1{id,n,x,y},c2{id,n,x,y},c3{id,n,x,y}]
             //console.log("axios",this.centrosDistribucion);
         });
+        
         //console.log("axios2",this.centrosDistribucion);
         for(var i=0; i<this.puntosVenta.length;i++){
             this.nodo.id= this.puntosVenta[i].N;
@@ -212,6 +224,7 @@ export default {
             this.nodos.push(this.nodo);
             this.nodo={id:'', label:'', x:'', y:''};
         }
+        
     },
 
     methods:{
@@ -250,17 +263,19 @@ export default {
             this.option2=false;
             this.option1=false;
             this.option3=true;
+            this.hojaDeRuta();
         },
         createCamiones(){
-            var camion={id:'', centroDist:'', puntoVenta:[],cantdisponible:1000};
+            var camion={id:'', centroDist:'', puntoVenta:[], cantdisponible:1000, ruta:[], distancia:''};
             for(var i=0; i<parseInt(this.camionesD);i++){
                 camion.id=i+1;
                 this.camiones.push(camion);
-                camion={id:'', centroDist:'', puntoVenta:[],cantdisponible:1000};
+                camion={id:'', centroDist:'', puntoVenta:[],cantdisponible:1000, ruta:[], distancia:''};
             }
-            this.distanciaCentro_Puntov();
-            this.asignarPunto();
-            this.hojaDeRuta();
+            this.puntosVentaEstatico=this.copia(this.puntosVenta, this.puntosVentaEstatico);
+            //this.distanciaCentro_Puntov();
+            //this.asignarPunto();
+            //this.hojaDeRuta();
             this.homeControl1();
         },
         asignarDistribuidor(id){
@@ -289,13 +304,19 @@ export default {
                 });
                 return;
             }
-            let pVenta={id:'',cant:''};
+            let pVenta={id:'',cant:'', x:'', y:''};
             
             for(var i=0; i<this.camiones.length; i++){
                 if(this.camiones[i].id==id){
                     if(this.camiones[i].cantdisponible>=this.cantidad){
                         pVenta.id=this.valor2;
                         pVenta.cant=this.cantidad;
+                        for(let a=0; a<this.puntosVenta.length; a++){ 
+                            if(this.puntosVenta[a].N==this.valor2){
+                                pVenta.x=this.puntosVenta[a].x;
+                                pVenta.y=this.puntosVenta[a].y;
+                            }
+                        }
                         this.camiones[i].puntoVenta.push(pVenta);
                         this.camiones[i].cantdisponible=this.camiones[i].cantdisponible-this.cantidad;
                     }
@@ -309,13 +330,19 @@ export default {
                     }
                 }
             }
-            this.cantidad='';
-            for(var j=0; j<this.puntosVenta.length; j++){
+            this.cantidad=''; 
+            for(var j=0; j<this.puntosVenta.length; j++){ 
                 if(this.puntosVenta[j].N==this.valor2){
                     this.puntosVenta.splice(j,1);
                     return;
                 }
             }   
+        },
+        copia(a,b){
+            for(let c=0; c<a.length; c++){
+                b.push(a[c]);
+            }
+            return b;
         },
         distanciaPuntoAPunto(puntoA,puntoB){           
             var x = puntoB.x-puntoA.x;
@@ -344,13 +371,16 @@ export default {
             var distancias = [];
             var distanciasC = [];
             var rutas_cortas=[];
-            for(let j = 0 ; j < this.puntosVenta.length ; j++){
-                    var array = [];
-                    for(let k = 0 ; k < this.centrosDistribucion.length ; k++){
-                        var distancia = this.distanciaPuntoAPunto(this.centrosDistribucion[k],this.puntosVenta[j]);
-                        array.push(this.puntosVenta[j],this.centrosDistribucion[k],distancia);                     
-                    }
-                    distancias.push(array);
+            var array = [];
+            for(let j = 0 ; j < this.puntosVentaEstatico.length ; j++){
+
+                for(let k = 0 ; k < this.centrosDistribucion.length ; k++){
+                    
+                    var distancia = this.distanciaPuntoAPunto(this.centrosDistribucion[k],this.puntosVentaEstatico[j]); 
+                    array.push([this.puntosVentaEstatico[j],this.centrosDistribucion[k],distancia]);                    
+                }
+                distancias.push(array);
+                array=[] //puntos -> centros -> punto{N,x,y,etc},centro{ con todo tambien },distancia
             }
             for(let cen = 0; cen < this.centrosDistribucion.length ; cen++){
                 var arr = {x:0,y:0}
@@ -361,105 +391,45 @@ export default {
                 otro.distancia = distanciaC
                 distanciasC.push(otro);
                 otro = {centro:'', fabrica:'',distancia:''}
-            }           
-            for(let dist = 0 ; dist<distancias.length; dist++){           
-                var min =Math.min(distancias[dist][2],distancias[dist][5]);               
-                if(distancias[dist][2] == min){
-                    rutas_cortas.push([distancias[dist][0],distancias[dist][1],distancias[dist][2]]);
-                }else{
-                    if(distancias[dist][5] == min){
-                        rutas_cortas.push([distancias[dist][3],distancias[dist][4],distancias[dist][5]]);
-                    }
-                }
             }
-            console.log("rutas_cortas:",rutas_cortas); 
-            var data2 = {punto:'',distancia:'', estado: false}
-            var cercanos = [];
-            var auxCentros=[];
-            var data3 = {centro:'', puntos: []}
-            for(let a=0; a<this.centrosDistribucion.length; a++){
-                data3.centro = this.centrosDistribucion[a].N;
-                auxCentros.push(data3); //
-                data3 = {centro:'', puntos: []}  
-            }
-            rutas_cortas.forEach(element => {
-                data2.punto = element[0].N;//element[0].type +
-                data2.distancia = element[2];
-                for(let b=0; b<auxCentros.length; b++){
-                    if(element[1].N == auxCentros[b].centro){
-                        auxCentros[b].puntos.push(data2);
-                    }
-                }
-                cercanos.push(data2);               
-                data2 = {punto:'',distancia:'', estado: false}
-            });
-
-            console.log("auxCentros",auxCentros);
             this.fabricaCentros = distanciasC;
-            this.centrosPuntos = auxCentros;
-            console.log("C",this.centrosPuntos);
-            console.log("F",this.fabricaCentros);
-            this.distanciaEntrePuntos(this.centrosPuntos);
+            this.centrosPuntos = distancias;
             this.enviarLog("Método distancia Centro_Puntov finalizado");                  
         },
-        distanciaEntrePuntos(){
-            //centrosPuntos = [{1,[{1,dist,estado},{3,dist,estado},{4,dist,estado}]},{2,[]}]
-            //ArrayCercanos = [{1,[{4,dist},{3,dist}]},{2,[]},{3,[{4,dist},{1,dist}]},{4,[{1,dist},{3,dist}]}]
-            
+        distanciaEntrePuntos(camion){
+            var puntoVenta=camion.puntoVenta;
             var arrayCercanos = [];
-            var listaPuntos = {punto: '', cerca: []}
-            var puntoCerca = {punto: '', distancia: ''}
-            for(let a=0; a<this.centrosPuntos.length; a++){
-                console.log("centrosPuntos[a][1]",this.centrosPuntos[a].puntos.length);
-                for(let b=0; b<this.centrosPuntos[a].puntos.length; b++){
-                    listaPuntos.punto = this.centrosPuntos[a].puntos[b].punto;
-                    for(let c=0; c<this.centrosPuntos[a].puntos.length; c++){
-                        if(b!=c){
-                            var arr1={x:'',y:''};
-                            var arr2={x:'',y:''};
-                            console.log("ptos",this.puntosVenta);
-                            for(let d=0; d< this.puntosVenta.length;d++){
-                                if(this.centrosPuntos[a].puntos[b].punto == this.puntosVenta[d].N){
-                                    arr1.x = this.puntosVenta[d].x
-                                    arr1.y = this.puntosVenta[d].y                                        
-                                }
-                                if(this.centrosPuntos[a].puntos[c].punto == this.puntosVenta[d].N){
-                                    arr2.x = this.puntosVenta[d].x
-                                    arr2.y = this.puntosVenta[d].y  
-                                }
-                            }
-                            console.log("arrays", arr1,arr2);
-                            var dist = this.distanciaPuntoAPunto(arr1,arr2);
-                            console.log("dist",dist);
-                            puntoCerca.punto =  this.centrosPuntos[a].puntos[c].punto;
-                            puntoCerca.distancia = dist;
-                            listaPuntos.cerca.push(puntoCerca);
-                            puntoCerca = {punto: '', distancia: ''}
-                        }
+            var listaPuntos = {punto: '',cerca:[], estado: false};
+            var puntoCerca = {punto: '', distancia: ''};
+            for(var a=0; a<puntoVenta.length; a++){
+                for(var b=0; b<puntoVenta.length; b++){
+                    if(a!=b){
+                        listaPuntos.punto = puntoVenta[a].id;
+                        var arr1={x:'',y:''};
+                        var arr2={x:'',y:''};
+                        arr1.x=puntoVenta[a].x;
+                        arr2.x=puntoVenta[b].x;
+                        arr1.y=puntoVenta[a].y;
+                        arr2.y=puntoVenta[b].y;
+                        var dist = this.distanciaPuntoAPunto(arr1,arr2);
+                        puntoCerca.punto = puntoVenta[b].id;
+                        puntoCerca.distancia = dist;
+                        listaPuntos.cerca.push(puntoCerca);
+                        puntoCerca = {punto: '', distancia: ''}
                     }
-                    arrayCercanos.push(listaPuntos);
-                    listaPuntos = {punto: '', cerca: []}
                 }
+                arrayCercanos.push(listaPuntos);
+                listaPuntos = {punto: '', cerca: [], estado: false}
             }
-            console.log("CERCA X PUNTO",arrayCercanos);
-            var myJSON = JSON.stringify(arrayCercanos);
-            console.log(myJSON);  
-            this.puntosCercanos=this.ordenarPuntos(arrayCercanos);
-            console.log("puntosCercanos",this.puntosCercanos);
+            return arrayCercanos;
         },
 
         ordenarPuntos(arrayCercanos){
-            //ArrayCercanos = [{1,[{4,dist},{3,dist}]},{2,[]},{3,[{4,dist},{1,dist}]},{4,[{1,dist},{3,dist}]}]
-            //var arrayCercanos = [];
-            //var listaPuntos = {punto: '', cerca: []}
-            //var puntoCerca = {punto: '', distancia: ''}
             for(let a=0; a<arrayCercanos.length; a++){
                 for(let b=0; b<arrayCercanos[a].cerca.length; b++){
                     arrayCercanos[a].cerca.sort((a,b)=>(a.distancia > b.distancia) ? 1 : -1);   // E + c +  p1 + p3 + E                           
                 }
-            }
-            var myJSON = JSON.stringify(arrayCercanos);
-            console.log(myJSON);    
+            }   
             return arrayCercanos;             
         },
 
@@ -479,24 +449,121 @@ export default {
             }                       
             console.log("centros",centros);
             this.centrosPuntos = centros;
-            console.log("centrosPuntos",this.centrosPuntos);//[{centro,punto:{punto,distancia}}]
-            console.log("centrosDistribucion",this.centrosDistribucion);//[{n,id,type=c,x,y}]
-            console.log("puntosVenta", this.puntosVenta);//[{n,id,type=P,x,y}]
+            console.log("centrosPuntos",this.centrosPuntos);
+            console.log("centrosDistribucion",this.centrosDistribucion);
+            console.log("puntosVenta", this.puntosVenta);
             this.enviarLog("Método asignarPunto finalizado");
             return centros;
         },
 
+        generarRuta(camion){
+            var estacinamiento = {x:0, y:0};
+            var distanciaCentro_PuntoVenta = 0;
+            var distanciaEstacinamiento_Centro = 0;
+            var distanciaPuntoVenta_PuntoVenta = 0;
+            var distanciaPuntoVenta_Estacionamiento = 0;
+            distanciaEstacinamiento_Centro = this.distanciaPuntoAPunto(estacionamiento, camion.centroDist);
+            for(var i=0; i<camion.length; i++){
+                for(var j=0; j<camion[i].puntoVenta.length; j++){
+                    if(camion[i].puntoVenta[0]){
+                        distanciaCentro_PuntoVenta = this.distanciaPuntoAPunto(camion.centroDist, camion[i].puntosVenta[0]);
+                    }
+                    else{
+                        distanciaPuntoVenta_PuntoVenta = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].puntoVenta[j+1]);
+                    }
 
-
+                    if(camion[i].puntoVenta[j-1]){
+                        distanciaPuntoVenta_Estacionamiento = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], estacionamiento);
+                    }
+    
+                }
+            }
+        },
 
         hojaDeRuta(){
-            this.camiones.forEach(element => {
-                console.log("camiones",element);
-               // tabla camiones: id_camion,centro_dist, relacionado a muchos puntos de venta. 
-
-            });
+            for(let cam = 0 ; cam < this.camiones.length; cam++){
+                var puntosXcamion = this.distanciaEntrePuntos(this.camiones[cam]);
+                puntosXcamion = this.ordenarPuntos(puntosXcamion);
+                console.log("puntosXcamion", puntosXcamion);
+                this.distanciaCentro_Puntov();
+                var puntoCercano = {punto:'' ,distancia:''}
+                var arrayAux = [];
+                for(let a = 0; a<this.centrosPuntos.length; a++){
+                    for(let b=0; b<this.centrosPuntos[a].length; b++){
+                        for(let c=0; c<puntosXcamion.length; c++){
+                            if(puntosXcamion[c].punto == this.centrosPuntos[a][b][0].N && this.camiones[cam].centroDist == this.centrosPuntos[a][b][1].N){
+                                puntoCercano.punto=this.centrosPuntos[a][b][0].N;
+                                puntoCercano.distancia=this.centrosPuntos[a][b][2];
+                                arrayAux.push(puntoCercano);
+                                puntoCercano = {punto:'' ,distancia:''}
+                            }
+                        }
+                    }
+                }
+                if(arrayAux.length>0){
+                    var min={punto:'', distancia:''};
+                    min.punto=arrayAux[0].punto;
+                    min.distancia=arrayAux[0].distancia;
+                    for(let e=0; e<arrayAux.length; e++){
+                        if(arrayAux[e].distancia<min.distancia){
+                            min.punto=arrayAux[e].punto;
+                            min.distancia=arrayAux[e].distancia;
+                        }
+                    }
+                    console.log("min",min);
+                    this.ruta(min, puntosXcamion, cam);
+                }
+            }
         },
-        //LOG
+
+        ruta(inicio, puntosXcamion, cam){
+            var arrayRuta=[];
+            arrayRuta.push(inicio.punto);
+            var distAcumulada=inicio.distancia;
+            for(let a=0; a<puntosXcamion.length; a++){
+                if(inicio.punto == puntosXcamion[a].punto && puntosXcamion[a].estado==false){
+                    puntosXcamion[a].estado=true;
+                    for(let b=0; b<puntosXcamion[a].cerca.length; b++){
+                        for(let c=0; c<puntosXcamion.length; c++){
+                            if(puntosXcamion[a].cerca[b].punto==puntosXcamion[c].punto && puntosXcamion[c].estado==false){
+                                distAcumulada=distAcumulada+puntosXcamion[a].cerca[b].distancia;
+                                puntosXcamion[c].estado==true;
+                                arrayRuta.push(puntosXcamion[c].punto);
+                                inicio.punto=puntosXcamion[c].punto;
+                                c=puntosXcamion.length;
+                                b=puntosXcamion[a].cerca.length;
+                            }
+                        }
+                    }
+                    a=-1;
+                }
+            }
+            var ultimo = arrayRuta[arrayRuta.length-1];
+            for(let ul = 0 ; ul < this.puntosVentaEstatico.length; ul++ ){
+                var arrul = {x:'',y:''}
+                var arres = {x:0,y:0}
+                if(ultimo == this.puntosVentaEstatico[ul].N){
+                    arrul.x = this.puntosVentaEstatico[ul].x
+                    arrul.y = this.puntosVentaEstatico[ul].y
+                    var distEst = this.distanciaPuntoAPunto(arrul,arres);
+                }
+            }
+            var ndis = 0
+            for(let es = 0; es<this.fabricaCentros.length; es++){
+                console.log("centro1",this.fabricaCentros[es].centro);
+                console.log("centro2",this.camiones[cam].centroDist);
+                if(this.camiones[cam].centroDist == this.fabricaCentros[es].centro){
+                    ndis = this.fabricaCentros[es].distancia  
+                }
+            }
+            console.log("ndis",ndis);
+            arrayRuta.push('Estacionamiento');
+            distAcumulada = distAcumulada + distEst + ndis;
+            this.camiones[cam].ruta=arrayRuta;
+            this.camiones[cam].distancia=distAcumulada;
+            console.log("Camión:",cam,":",this.camiones[cam]);
+        },
+
         enviarLog(str){
             axios.get("addlog",{params: {messagge: str}}).then(resp =>{
                 console.log("log add");
