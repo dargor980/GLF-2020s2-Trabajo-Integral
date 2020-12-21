@@ -2082,9 +2082,7 @@ __webpack_require__.r(__webpack_exports__);
       camiones: [],
       fabricaCentros: [],
       centrosPuntos: [],
-      //{p,c,d}
       puntosCercanos: [],
-      //lista de puntos entre puntos
       nodos: [{
         id: 'estacionamiento',
         label: 'estacionamiento'
@@ -2118,14 +2116,11 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     axios.get('puntosventa').then(function (response) {
-      _this.puntosVenta = response.data; //[p1{id,n,x,y},p2{id,n,x,y},p3{id,n,x,y}]
-      //console.log("axios",this.puntosVenta);
-    }); //console.log("axios2",this.puntosVenta);
-
+      _this.puntosVenta = response.data;
+    });
     axios.get('centrosdistribucion').then(function (response) {
-      _this.centrosDistribucion = response.data; //[c1{id,n,x,y},c2{id,n,x,y},c3{id,n,x,y}]
-      //console.log("axios",this.centrosDistribucion);
-    }); //console.log("axios2",this.centrosDistribucion);
+      _this.centrosDistribucion = response.data;
+    });
 
     for (var i = 0; i < this.puntosVenta.length; i++) {
       this.nodo.id = this.puntosVenta[i].N;
@@ -2140,8 +2135,7 @@ __webpack_require__.r(__webpack_exports__);
         x: '',
         y: ''
       };
-    } //console.log("nodos1:",this.nodos);
-
+    }
 
     for (var j = 0; j < this.centrosDistribucion.length; j++) {
       this.nodo.id = this.centrosDistribucion[j].N;
@@ -2162,8 +2156,7 @@ __webpack_require__.r(__webpack_exports__);
     homeControl1: function homeControl1() {
       this.option1 = false;
       this.option2 = true;
-      this.option3 = false; //console.log("Camiones:", this.camiones);
-
+      this.option3 = false;
       return;
     },
     homeControl2: function homeControl2() {
@@ -2196,6 +2189,7 @@ __webpack_require__.r(__webpack_exports__);
       this.hojaDeRuta();
     },
     createCamiones: function createCamiones() {
+      this.enviarLog("Método createCamiones iniciado");
       var camion = {
         id: '',
         centroDist: '',
@@ -2218,13 +2212,13 @@ __webpack_require__.r(__webpack_exports__);
         };
       }
 
-      this.puntosVentaEstatico = this.copia(this.puntosVenta, this.puntosVentaEstatico); //this.distanciaCentro_Puntov();
-      //this.asignarPunto();
-      //this.hojaDeRuta();
-
+      this.puntosVentaEstatico = this.copia(this.puntosVenta, this.puntosVentaEstatico);
+      this.enviarLog("Método createCamiones finalizado");
       this.homeControl1();
     },
     asignarDistribuidor: function asignarDistribuidor(id) {
+      this.enviarLog("Iniciando método asignarDistribuidor");
+
       if (this.valor == 0 || this.valor == '') {
         swal("Seleccione un centro de distribución antes de continuar.", {
           className: "alertas",
@@ -2241,10 +2235,13 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
 
+      this.enviarLog("Método asignarDistribuidor Finalizado");
       this.formControl1();
     },
     asignarPuntoVenta: function asignarPuntoVenta(id) {
-      if (this.valor2 == 0 || this.valor2 == '' || this.cantidad == '' || this.cantidad == 0) {
+      this.enviarLog("Método asignarPuntoVenta iniciado");
+
+      if (this.valor2 == 0 || this.valor2 == '' || this.valor2 == null || this.valor2.length < 1 || this.cantidad == '' || this.cantidad == 0) {
         swal("Rellene los campos antes de continuar", {
           className: "alertas",
           title: "Aviso",
@@ -2287,42 +2284,36 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.cantidad = '';
+      var aux = this.valor2;
+      this.valor2 = undefined;
 
       for (var j = 0; j < this.puntosVenta.length; j++) {
-        if (this.puntosVenta[j].N == this.valor2) {
+        if (this.puntosVenta[j].N == aux) {
           this.puntosVenta.splice(j, 1);
           return;
         }
       }
+
+      aux = '';
+      this.enviarLog("Método asignarPuntoVenta finalizado");
     },
     copia: function copia(a, b) {
+      this.enviarLog("Método copia iniciado");
+
       for (var c = 0; c < a.length; c++) {
         b.push(a[c]);
       }
 
+      this.enviarLog("Método copia finalizado");
       return b;
     },
     distanciaPuntoAPunto: function distanciaPuntoAPunto(puntoA, puntoB) {
+      this.enviarLog("Método distanciaPuntoAPunto iniciado");
       var x = puntoB.x - puntoA.x;
       var y = puntoB.y - puntoA.y;
       var resultado = parseFloat(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+      this.enviarLog("Método distanciaPuntoAPunto finalizado");
       return resultado;
-    },
-    generarAristas: function generarAristas() {
-      for (var i = 0; i < this.nodos.length; i++) {
-        for (var j = 0; j < this.nodos.length; j++) {
-          if (i != j) {
-            this.arista.from = this.nodos[i].N;
-            this.arista.to = this.nodos[j].N;
-            this.arista.label = this.distanciaPuntoAPunto(this.nodos[i], this.nodos[j]);
-            this.aristas.push(this.arista);
-            this.arista.from = this.nodos[j].N;
-            this.artista.to = this.nodos[i].N;
-            this.arista.label = this.distanciaPuntoAPunto(this.nodos[i], this.nodos[j]);
-            this.aristas.push(this.arista);
-          }
-        }
-      }
     },
     distanciaCentro_Puntov: function distanciaCentro_Puntov() {
       this.enviarLog("Iniciando método distanciaCentro_Puntov");
@@ -2338,7 +2329,7 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         distancias.push(array);
-        array = []; //puntos -> centros -> punto{N,x,y,etc},centro{ con todo tambien },distancia
+        array = [];
       }
 
       for (var cen = 0; cen < this.centrosDistribucion.length; cen++) {
@@ -2352,8 +2343,7 @@ __webpack_require__.r(__webpack_exports__);
           distancia: ''
         };
         var distanciaC = this.distanciaPuntoAPunto(arr, this.centrosDistribucion[cen]);
-        otro.centro = this.centrosDistribucion[cen].N; //this.centrosDistribucion[cen].type + 
-
+        otro.centro = this.centrosDistribucion[cen].N;
         otro.fabrica = arr.x + ',' + arr.y;
         otro.distancia = distanciaC;
         distanciasC.push(otro);
@@ -2369,6 +2359,7 @@ __webpack_require__.r(__webpack_exports__);
       this.enviarLog("Método distancia Centro_Puntov finalizado");
     },
     distanciaEntrePuntos: function distanciaEntrePuntos(camion) {
+      this.enviarLog("Método distanciaEntrePuntos iniciado");
       var puntoVenta = camion.puntoVenta;
       var arrayCercanos = [];
       var listaPuntos = {
@@ -2416,17 +2407,21 @@ __webpack_require__.r(__webpack_exports__);
         };
       }
 
+      this.enviarLog("Método distanciaEntrePuntos finalizado");
       return arrayCercanos;
     },
     ordenarPuntos: function ordenarPuntos(arrayCercanos) {
+      this.enviarLog("Método ordenarPuntos iniciado");
+
       for (var a = 0; a < arrayCercanos.length; a++) {
         for (var b = 0; b < arrayCercanos[a].cerca.length; b++) {
           arrayCercanos[a].cerca.sort(function (a, b) {
             return a.distancia > b.distancia ? 1 : -1;
-          }); // E + c +  p1 + p3 + E                           
+          });
         }
       }
 
+      this.enviarLog("Método ordenarPuntos finalizado");
       return arrayCercanos;
     },
     asignarPunto: function asignarPunto() {
@@ -2457,7 +2452,6 @@ __webpack_require__.r(__webpack_exports__);
         };
       }
 
-      console.log("centros", centros);
       this.centrosPuntos = centros;
       console.log("centrosPuntos", this.centrosPuntos);
       console.log("centrosDistribucion", this.centrosDistribucion);
@@ -2465,32 +2459,9 @@ __webpack_require__.r(__webpack_exports__);
       this.enviarLog("Método asignarPunto finalizado");
       return centros;
     },
-    generarRuta: function generarRuta(camion) {
-      var estacinamiento = {
-        x: 0,
-        y: 0
-      };
-      var distanciaCentro_PuntoVenta = 0;
-      var distanciaEstacinamiento_Centro = 0;
-      var distanciaPuntoVenta_PuntoVenta = 0;
-      var distanciaPuntoVenta_Estacionamiento = 0;
-      distanciaEstacinamiento_Centro = this.distanciaPuntoAPunto(estacionamiento, camion.centroDist);
-
-      for (var i = 0; i < camion.length; i++) {
-        for (var j = 0; j < camion[i].puntoVenta.length; j++) {
-          if (camion[i].puntoVenta[0]) {
-            distanciaCentro_PuntoVenta = this.distanciaPuntoAPunto(camion.centroDist, camion[i].puntosVenta[0]);
-          } else {
-            distanciaPuntoVenta_PuntoVenta = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], camion[i].puntoVenta[j + 1]);
-          }
-
-          if (camion[i].puntoVenta[j - 1]) {
-            distanciaPuntoVenta_Estacionamiento = this.distanciaPuntoAPunto(camion[i].puntoVenta[j], estacionamiento);
-          }
-        }
-      }
-    },
     hojaDeRuta: function hojaDeRuta() {
+      this.enviarLog("Método hojaDeRuta iniciado");
+
       for (var cam = 0; cam < this.camiones.length; cam++) {
         var puntosXcamion = this.distanciaEntrePuntos(this.camiones[cam]);
         puntosXcamion = this.ordenarPuntos(puntosXcamion);
@@ -2537,8 +2508,11 @@ __webpack_require__.r(__webpack_exports__);
           this.ruta(min, puntosXcamion, cam);
         }
       }
+
+      this.enviarLog("Método hojaDeRuta finalizado");
     },
     ruta: function ruta(inicio, puntosXcamion, cam) {
+      this.enviarLog("Método ruta iniciado");
       var arrayRuta = [];
       arrayRuta.push(inicio.punto);
       var distAcumulada = inicio.distancia;
@@ -2595,12 +2569,16 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       console.log("ndis", ndis);
+      arrayRuta.unshift('C' + this.camiones[cam].centroDist);
+      arrayRuta.unshift('Estacionamiento');
       arrayRuta.push('Estacionamiento');
       distAcumulada = distAcumulada + distEst + ndis;
       this.camiones[cam].ruta = arrayRuta;
       this.camiones[cam].distancia = distAcumulada;
       console.log("Camión:", cam, ":", this.camiones[cam]);
+      this.enviarLog("Método ruta finalizado");
     },
+    //Log
     enviarLog: function enviarLog(str) {
       axios.get("addlog", {
         params: {
@@ -94197,7 +94175,12 @@ var render = function() {
                       }
                     ],
                     staticClass: "form-control",
-                    attrs: { type: "number", name: "id", min: "0" },
+                    attrs: {
+                      type: "number",
+                      name: "id",
+                      min: "1",
+                      required: ""
+                    },
                     domProps: { value: _vm.camionesD },
                     on: {
                       input: function($event) {
@@ -94594,45 +94577,45 @@ var render = function() {
                       _c(
                         "table",
                         { staticClass: "table table-bordered textocolor" },
-                        [
-                          _c("th", { attrs: { colspan: "3" } }, [_vm._v("#")]),
-                          _vm._v(" "),
-                          _vm._l(item.puntoVenta, function(otem, ondex) {
-                            return _c("tr", { key: ondex }, [
-                              _c("th", [
-                                _vm._v("id: " + _vm._s(otem.id) + " ")
-                              ]),
-                              _vm._v(" "),
-                              _c("th", [
-                                _vm._v("Cantidad: " + _vm._s(otem.cant))
-                              ])
-                            ])
-                          })
-                        ],
-                        2
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "table",
-                        { staticClass: "table table-bordered textocolor" },
-                        [
-                          _c("th", { attrs: { colspan: "3" } }, [
-                            _vm._v("Ruta")
-                          ]),
-                          _vm._v(" "),
-                          _vm._l(item.ruta, function(dtem, dndex) {
-                            return _c("tr", { key: dndex }, [
-                              _c("th", [
-                                _vm._v("Punto de venta: " + _vm._s(dtem) + " ")
-                              ])
-                            ])
-                          })
-                        ],
-                        2
+                        _vm._l(item.puntoVenta, function(otem, ondex) {
+                          return _c("tr", { key: ondex }, [
+                            _c("th", [_vm._v("id: " + _vm._s(otem.id) + " ")]),
+                            _vm._v(" "),
+                            _c("th", [_vm._v("Cantidad: " + _vm._s(otem.cant))])
+                          ])
+                        }),
+                        0
                       ),
                       _vm._v(" "),
                       _c("td", [
-                        _vm._v("Distancia totál" + _vm._s(item.distancia))
+                        _c(
+                          "table",
+                          {
+                            staticClass: "table table-bordered textocolor mx-1"
+                          },
+                          [
+                            _c("th", { attrs: { colspan: "3" } }, [
+                              _vm._v("Ruta")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(item.ruta, function(dtem, dndex) {
+                              return _c("tr", { key: dndex }, [
+                                _c("th", [
+                                  _vm._v("Punto: " + _vm._s(dtem) + " ")
+                                ])
+                              ])
+                            })
+                          ],
+                          2
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("th", { attrs: { scope: "row" } }, [
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(item.distancia) +
+                            "\n                        "
+                        )
                       ])
                     ])
                   }),
@@ -94761,7 +94744,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Puntos de venta")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ruta")])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ruta")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Distancia")])
       ])
     ])
   }
